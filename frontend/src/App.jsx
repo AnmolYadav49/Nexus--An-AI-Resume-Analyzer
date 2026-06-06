@@ -105,12 +105,15 @@ function ResultPanel({ result }) {
             margin: '8px auto 0',
             overflow: 'hidden'
           }}>
-            <div style={{
-              height: '100%',
-              width: `${result.ats_score}%`,
-              background: 'var(--primary-gradient)',
-              borderRadius: '3px'
-            }} />
+            <div 
+              className="dna-bar-fill"
+              style={{
+                height: '100%',
+                width: `${result.ats_score}%`,
+                background: 'var(--primary-gradient)',
+                borderRadius: '3px'
+              }} 
+            />
           </div>
         </div>
       </div>
@@ -133,12 +136,15 @@ function ResultPanel({ result }) {
                   </span>
                 </div>
                 <div style={{ height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{
-                    height: '100%',
-                    width: `${val}%`,
-                    background: 'var(--accent)',
-                    borderRadius: '3px'
-                  }} />
+                  <div 
+                    className="dna-bar-fill"
+                    style={{
+                      height: '100%',
+                      width: `${val}%`,
+                      background: 'var(--accent)',
+                      borderRadius: '3px'
+                    }} 
+                  />
                 </div>
               </div>
             ))}

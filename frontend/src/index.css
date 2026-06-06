@@ -93,6 +93,30 @@ body {
   to { transform: rotate(360deg); }
 }
 
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(108, 92, 231, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(108, 92, 231, 0.6); }
+}
+
+.loading-ring {
+  animation: spin 0.9s linear infinite, pulse-glow 2s ease-in-out infinite;
+}
+
+/* ── UI Polish ── */
+
+.dna-bar-fill {
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+}
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

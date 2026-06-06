@@ -123,18 +123,25 @@ npm run dev
 ```
 Open your browser to the local dev address (typically `http://localhost:5173`).
 
----
-
 ## Screenshots & Interface Walkthrough
 
-*(Place screenshots or demo GIFs here to demonstrate the interface)*
+Below is the step-by-step visual workflow of the Nexus AI Resume Builder interface.
 
-1.  **Idle State / Upload View**: Clear drag-and-drop panel with glassmorphism hover animations.
-2.  **Analysis Summary Panel**: Suitable role with confidence rating ring and ATS compatibility scores.
-3.  **Resume DNA & Skills**: Responsive grid visualization highlighting competencies, vulnerabilities, and metrics.
-4.  **Improvement & Polishing**: Bullet recommendations showing direct side-by-side action transformations.
+1.  **Idle State / Upload View** (`01-upload-view.png`):
+    ![01-upload-view.png](docs/screenshots/01-upload-view.png)
+2.  **Analysis Loading State** (`02-analyzing-state.png`):
+    ![02-analyzing-state.png](docs/screenshots/02-analyzing-state.png)
+3.  **Overview Dashboard** (`03-overview-dashboard.png`):
+    ![03-overview-dashboard.png](docs/screenshots/03-overview-dashboard.png)
+4.  **Resume DNA Profile** (`04-resume-dna.png`):
+    ![04-resume-dna.png](docs/screenshots/04-resume-dna.png)
+5.  **Captured & Missing Skills Matrix** (`05-skills-matrix.png`):
+    ![05-skills-matrix.png](docs/screenshots/05-skills-matrix.png)
+6.  **AI Suggestions & Polished Bullets** (`06-directives-polish.png`):
+    ![06-directives-polish.png](docs/screenshots/06-directives-polish.png)
+7.  **System Architecture Flow** (`07-architecture-flow.png`):
+    ![07-architecture-flow.png](docs/screenshots/07-architecture-flow.png)
 
----
 
 ## Future Improvements
 *   **Local LLM Integration**: Incorporate an offline Ollama backend instance for advanced contextual summaries.
