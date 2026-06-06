@@ -1,0 +1,399 @@
+{% extends 'layout.html' %}
+
+{% block nav_actions %}
+<div class="d-flex align-items-center gap-3">
+    <button id="downloadPdfBtn" class="btn nx-liquid-glass px-4 py-2 fw-medium"><i class="bi bi-download me-2"></i> Export Report</button>
+    <a href="/" class="btn btn-premium px-4 py-2 fw-medium d-flex align-items-center"><i class="bi bi-arrow-left me-2"></i> Back</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="reportContainer" class="container-fluid px-4 px-lg-5 py-5">
+    
+    <!-- Header -->
+    <div class="row mb-6 animate-up">
+        <div class="col-12 text-center text-md-start">
+            <h2 class="display-5 fw-bold text-white mb-2">Resume Intelligence Report</h2>
+            <p class="text-white-50 fs-5 fw-light">A detailed deep-dive into your document optimization capabilities.</p>
+        </div>
+    </div>
+
+    <!-- Top Overview Highlights -->
+    <div class="row g-4 mb-6">
+        
+        <!-- Role Prediction + ATS Score Ring -->
+        <div class="col-md-6 col-xl-3 animate-up delay-1">
+            <div class="glass-panel luxury-card nx-tilt-card nexus-highlight-card h-100 p-4 p-xl-4 d-flex flex-column justify-content-center align-items-center position-relative">
+                <div class="nexus-card-dots"></div>
+                <div class="nexus-card-corner nexus-card-corner-tl"></div>
+                <!-- Animated SVG Score Ring -->
+                <div class="score-ring-wrap mb-3" style="width:120px;height:120px;">
+                    <svg class="score-ring" width="120" height="120" viewBox="0 0 100 100">
+                        <circle class="score-ring-bg" cx="50" cy="50" r="45"/>
+                        <circle class="score-ring-fill" cx="50" cy="50" r="45"
+                                data-score="{{ score }}"
+                                style="stroke-dashoffset:283;"/>
+                    </svg>
+                    <div class="score-ring-center">
+                        <span class="score-number">0%</span>
+                        <span class="score-label">ATS</span>
+                    </div>
+                </div>
+                <p class="text-uppercase tracking-wider fw-semibold text-secondary opacity-75 small mb-1 text-center">Best Suitable Role</p>
+                <h3 class="fs-4 fw-bold text-white mb-1 text-center" id="predictedRoleDisplay">{{ role }}</h3>
+                <div class="confidence-badge mt-2 {% if confidence >= 70 %}confidence-high{% elif confidence >= 45 %}confidence-medium{% else %}confidence-low{% endif %}">
+                    ● {{ confidence }}% confidence
+                </div>
+            </div>
+        </div>
+
+        <!-- Resume DNA Matrix Card -->
+        <div class="col-md-6 col-xl-3 animate-up delay-2">
+            <div class="glass-panel luxury-card nx-tilt-card nexus-highlight-card h-100 pt-4 p-x-4 pb-2 d-flex flex-column align-items-center">
+                <div class="nexus-card-corner nexus-card-corner-br"></div>
+                <p class="text-uppercase tracking-wider fw-semibold text-secondary opacity-75 small mb-1 w-100 text-center">Genetic Profile DNA</p>
+                <div class="w-100 position-relative d-flex justify-content-center" style="height: 180px;">
+                    <canvas id="dnaRadarChart" data-dna="{{ dna_matrix | tojson }}"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Granular Score Breakdown Card -->
+        <div class="col-md-6 col-xl-3 animate-up delay-3">
+            <div class="glass-panel luxury-card nx-tilt-card nexus-highlight-card h-100 p-4 p-xl-4 d-flex flex-column justify-content-center">
+                <p class="text-uppercase tracking-wider fw-semibold text-secondary opacity-75 small mb-3">Metrics Array</p>
+                <div class="d-flex flex-column gap-3" id="breakdownContainer">
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-white-50">Impact Factor</span><span class="small fw-bold text-white">{{ breakdown.impact }}%</span>
+                        </div>
+                        <div class="nexus-bar-wrap">
+                            <div class="nexus-bar" data-target="{{ breakdown.impact }}" style="background: linear-gradient(90deg,#22D3EE,#818CF8);"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-white-50">Skill Density</span><span class="small fw-bold text-white">{{ breakdown.skills }}%</span>
+                        </div>
+                        <div class="nexus-bar-wrap">
+                            <div class="nexus-bar" data-target="{{ breakdown.skills }}" style="background: linear-gradient(90deg,#34D399,#22D3EE);"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-white-50">Formatting Integrity</span><span class="small fw-bold text-white">{{ breakdown.formatting }}%</span>
+                        </div>
+                        <div class="nexus-bar-wrap">
+                            <div class="nexus-bar" data-target="{{ breakdown.formatting }}" style="background: linear-gradient(90deg,#FBBF24,#FB923C);"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-white-50">Keyword Density</span><span class="small fw-bold text-white">{{ breakdown.keyword }}%</span>
+                        </div>
+                        <div class="nexus-bar-wrap">
+                            <div class="nexus-bar" data-target="{{ breakdown.keyword }}" style="background: linear-gradient(90deg,#F87171,#FB7185);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 3 List Card -->
+        <div class="col-md-6 col-xl-3 animate-up delay-4">
+            <div class="glass-panel luxury-card nexus-highlight-card h-100 p-4 p-xl-5">
+                <p class="text-uppercase tracking-wider fw-semibold text-secondary small mb-3">Closest Match Spectrum</p>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+                    {% for tr in top_roles %}
+                    <li>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="text-white-50 fw-medium small">{{ tr.role }}</span>
+                            <span class="text-white fw-bold small">{{ tr.prob }}%</span>
+                        </div>
+                        <div class="progress bg-dark" style="height: 6px; border-radius: 4px;">
+                            <div class="progress-bar" role="progressbar" style="width: {{ tr.prob }}%; background: linear-gradient(90deg, var(--accent-indigo), var(--accent-purple)); border-radius: 4px;"></div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Body Row -->
+    <div class="row g-4 mb-6">
+        <!-- Recruiter Eye View (Insights & Heatmap) -->
+        <div class="col-lg-7 animate-up delay-5">
+            <div class="glass-panel luxury-card nexus-highlight-card p-4 h-100 flex-column d-flex">
+                <div class="nexus-card-dots"></div>
+                <div class="d-flex align-items-center justify-content-between mb-4 border-bottom border-light border-opacity-10 pb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3 text-indigo"><i class="bi bi-eye fs-4"></i></div>
+                        <h4 class="text-white mb-0 fw-bold">Recruiter Eye Intelligence</h4>
+                    </div>
+                    <button class="btn btn-sm btn-outline-light border-opacity-25 rounded-pill px-3" onclick="toggleHeatmap()">
+                        <i class="bi bi-fire me-1"></i> Toggle Heatmap
+                    </button>
+                </div>
+                
+                <div class="row g-3 mb-4">
+                    {% for insight in recruiter_insights %}
+                    <div class="col-md-6">
+                        <div class="alert alert-{{ insight.type }} bg-{{ insight.type }} bg-opacity-10 border-{{ insight.type }} border-opacity-25 text-white small mb-0 d-flex align-items-start gap-2">
+                            <i class="bi bi-{% if insight.type == 'success' %}check-circle{% elif insight.type == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}-fill text-{{ insight.type }}"></i>
+                            <span>{{ insight.text }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="resume-text-display flex-grow-1 position-relative" id="resumeHeatmapContainer">
+                    <div id="rawTextContent" data-raw="{{ raw_text }}" data-highlights='{{ highlights | tojson }}' style="color: rgba(255,255,255,0.7);">
+                        {{ raw_text }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Fit Simulator -->
+        <div class="col-lg-5 animate-up delay-6">
+            <div class="glass-panel luxury-card nexus-highlight-card p-4 h-100">
+                <div class="d-flex align-items-center mb-4 border-bottom border-light border-opacity-10 pb-3">
+                    <div class="bg-purple bg-opacity-10 p-2 rounded-3 me-3 text-purple"><i class="bi bi-cpu fs-4"></i></div>
+                    <h4 class="text-white mb-0 fw-bold">Job Fit Simulator</h4>
+                </div>
+                <p class="text-white-50 small mb-4">Simulating your profile against 30+ industry benchmarks to discover cross-role compatibility.</p>
+                
+                <div class="w-100 mb-4" style="height: 300px;">
+                    <canvas id="jobFitChart" data-fit='{{ job_fit | tojson }}'></canvas>
+                </div>
+
+                <div class="d-flex flex-column gap-2">
+                    {% for fit in job_fit %}
+                    <div class="fit-rank-card">
+                        <div class="fit-rank-badge {% if fit.score > 70 %}confidence-high{% elif fit.score > 50 %}confidence-medium{% else %}confidence-low{% endif %}">
+                            {{ fit.score }}%
+                        </div>
+                        <div class="d-flex flex-column flex-grow-1">
+                            <span class="text-white fw-semibold small">{{ fit.role }}</span>
+                            <span class="text-white-50" style="font-size:0.7rem;">{{ fit.match_type }} Match</span>
+                        </div>
+                        <div class="nexus-bar-wrap" style="width:80px;">
+                            <div class="nexus-bar" data-target="{{ fit.score }}"
+                                 style="background: {% if fit.score > 70 %}linear-gradient(90deg,#34D399,#22D3EE){% elif fit.score > 50 %}linear-gradient(90deg,#FBBF24,#FB923C){% else %}linear-gradient(90deg,#F87171,#FB7185){% endif %};"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Matrix (Core Skills & Gaps) -->
+    <div class="row g-4 mb-6">
+        <!-- Skill Extraction -->
+        <div class="col-lg-6 animate-up delay-1">
+            <div class="glass-panel luxury-card nexus-highlight-card p-4 h-100">
+                <div class="d-flex align-items-center mb-4 border-bottom border-light border-opacity-10 pb-3">
+                    <div class="bg-success bg-opacity-10 p-2 rounded-3 me-3 text-emerald"><i class="bi bi-lightning-charge fs-4"></i></div>
+                    <h4 class="text-white mb-0 fw-bold">Captured Competencies</h4>
+                </div>
+                
+                {% if found_skills %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in found_skills %}
+                            <span class="premium-pill pill-success"><i class="bi bi-check-all me-1"></i>{{ skill | title }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-database-exclamation fs-1 text-muted d-block mb-3"></i>
+                    <h5 class="text-secondary fw-normal">No technical entities extracted.</h5>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Missing Skills -->
+        <div class="col-lg-6 animate-up delay-2">
+            <div class="glass-panel luxury-card nexus-highlight-card p-4 h-100 border-danger border-opacity-10">
+                <div class="d-flex align-items-center mb-4 border-bottom border-light border-opacity-10 pb-3">
+                    <div class="bg-danger bg-opacity-10 p-2 rounded-3 me-3 text-rose"><i class="bi bi-slash-circle fs-4"></i></div>
+                    <h4 class="text-white mb-0 fw-bold">Identified Vulnerabilities</h4>
+                </div>
+                
+                {% if missing_skills %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in missing_skills %}
+                            <span class="premium-pill pill-danger"><i class="bi bi-dash me-1"></i>{{ skill | title }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-shield-check fs-1 text-emerald d-block mb-3"></i>
+                    <h5 class="text-secondary fw-normal">Complete keyword saturation.</h5>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Suggestions Engine -->
+    <div class="row mb-6 animate-up delay-4">
+        <div class="col-12">
+            <div class="glass-panel luxury-card nexus-highlight-card p-4 p-md-5 position-relative overflow-hidden">
+                <div class="nexus-card-dots"></div>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-warning bg-opacity-10 p-2 rounded-3 me-3 text-warning"><i class="bi bi-magic fs-4"></i></div>
+                    <h4 class="text-white mb-0 fw-bold z-1">Algorithmic Improvement Directives</h4>
+                </div>
+                
+                <div class="row g-3 z-1 position-relative">
+                    {% for suggestion in suggestions %}
+                    <div class="col-md-6">
+                        <div class="glass-panel p-4 rounded-4 h-100 d-flex align-items-start border border-white-50 border-opacity-10 hover-lift">
+                            <i class="bi bi-stars text-warning fs-4 me-3"></i>
+                            <span class="text-white-50 fs-6 lh-lg">{{ suggestion }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 1. Chart.js Initialization Engine
+    document.addEventListener('DOMContentLoaded', function() {
+        // DNA Radar Chart
+        const dnaCtx = document.getElementById('dnaRadarChart');
+        const dnaData = JSON.parse(dnaCtx.getAttribute('data-dna'));
+        
+        new Chart(dnaCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Technical', 'Leadership', 'Impact', 'Communications', 'Problem Solving'],
+                datasets: [{
+                    label: 'Resume DNA',
+                    data: dnaData,
+                    fill: true,
+                    backgroundColor: 'rgba(129, 140, 248, 0.2)',
+                    borderColor: '#818CF8',
+                    pointBackgroundColor: '#818CF8',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#818CF8'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255,255,255,0.1)' },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        pointLabels: { color: 'rgba(255,255,255,0.5)', font: { size: 10 } },
+                        ticks: { display: false, stepSize: 20 },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Job Fit Simulator Chart (Horizontal Bar)
+        const fitCtx = document.getElementById('jobFitChart');
+        const fitDataRaw = JSON.parse(fitCtx.getAttribute('data-fit'));
+        
+        new Chart(fitCtx, {
+            type: 'bar',
+            data: {
+                labels: fitDataRaw.map(f => f.role),
+                datasets: [{
+                    label: 'Alignment Strength',
+                    data: fitDataRaw.map(f => f.score),
+                    backgroundColor: fitDataRaw.map(f => f.score > 70 ? 'rgba(52, 211, 153, 0.4)' : 'rgba(129, 140, 248, 0.4)'),
+                    borderColor: fitDataRaw.map(f => f.score > 70 ? '#34D399' : '#818CF8'),
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 10 } },
+                        suggestedMax: 100
+                    },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: 'white', font: { size: 11, weight: '600' } }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
+
+    // 2. Recruiter Heatmap Logic
+    let heatmapActive = false;
+    function toggleHeatmap() {
+        const contentDiv = document.getElementById('rawTextContent');
+        const raw = contentDiv.getAttribute('data-raw');
+        const highlights = JSON.parse(contentDiv.getAttribute('data-highlights'));
+        
+        if (!heatmapActive) {
+            // Apply highlights
+            let highlightedHtml = raw;
+            // Sort highlights by start index descending to avoid offset issues
+            const sorted = highlights.sort((a,b) => b.start - a.start);
+            
+            sorted.forEach(h => {
+                const before = highlightedHtml.substring(0, h.start);
+                const match = highlightedHtml.substring(h.start, h.end);
+                const after = highlightedHtml.substring(h.end);
+                highlightedHtml = before + `<span class="highlight-span" title="Detected Competency: ${h.text}">${match}</span>` + after;
+            });
+            
+            contentDiv.innerHTML = highlightedHtml;
+            heatmapActive = true;
+        } else {
+            contentDiv.innerText = raw;
+            heatmapActive = false;
+        }
+    }
+
+    // 3. Export Logic
+    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+        const element = document.getElementById('reportContainer');
+        const opt = {
+            margin:       0.2,
+            filename:     'Nexus_AI_Analysis_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#07070A' },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Generating...';
+        btn.classList.add('disabled');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            btn.innerHTML = '<i class="bi bi-check-lg me-2"></i> Saved';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('disabled');
+            }, 3000);
+        });
+    });
+</script>
+{% endblock %}

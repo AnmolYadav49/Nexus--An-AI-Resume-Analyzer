@@ -1,0 +1,172 @@
+{% extends "layout.html" %}
+
+{% block title %}How It Works - Nexus AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 px-lg-5 py-5" style="max-width: 1200px;">
+
+    <!-- Hero Section -->
+    <div class="row mb-7 text-center scroll-reveal pb-5 border-bottom border-light border-opacity-10">
+        <div class="col-12 col-md-8 mx-auto">
+            <div class="badge bg-primary bg-opacity-25 text-indigo px-3 py-2 rounded-pill fw-medium border border-primary border-opacity-25 mb-4">
+                Architecture Breakdown
+            </div>
+            <h1 class="display-3 fw-bold text-white mb-4">Inside the Intelligence Engine.</h1>
+            <p class="text-white-50 fs-4 fw-light">Discover how our ensemble models deconstruct structural semantics and re-engineer competitive portfolios in seconds.</p>
+        </div>
+    </div>
+
+    <!-- Pipeline Grid — 8 steps with scroll-triggered entrance -->
+    <div class="row g-4 mb-7">
+
+        <div class="col-12 mb-4 scroll-reveal">
+            <p class="text-uppercase tracking-wider fw-semibold text-secondary opacity-75 small mb-0">Pipeline Sequence</p>
+            <h2 class="display-6 fw-bold text-white">8-Stage Processing Flow</h2>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="pipeline-step h-100 nexus-highlight-card">
+                <span class="pipeline-number">01</span>
+                <div class="pipeline-icon" style="background: rgba(129,140,248,0.12);">📄</div>
+                <h5 class="text-white fw-bold mb-2">Secure Ingestion</h5>
+                <p class="text-secondary small mb-0">Upload your PDF or DOCX. Local parsing nodes extract raw text without cloud telemetry exposure.</p>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="pipeline-step h-100 nexus-highlight-card">
+                <span class="pipeline-number">02</span>
+                <div class="pipeline-icon" style="background: rgba(34,211,238,0.12);">⚙️</div>
+                <h5 class="text-white fw-bold mb-2">NLP Preprocessing</h5>
+                <p class="text-secondary small mb-0">Tokenization, stopword removal, and TF-IDF vector construction for high-dimensional text representation.</p>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="pipeline-step h-100 nexus-highlight-card">
+                <span class="pipeline-number">03</span>
+                <div class="pipeline-icon" style="background: rgba(52,211,153,0.12);">🎯</div>
+                <h5 class="text-white fw-bold mb-2">Role Classification</h5>
+                <p class="text-secondary small mb-0">A 17-class Logistic Regression model predicts your dominant role with confidence distribution across all classes.</p>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="pipeline-step h-100 nexus-highlight-card">
+                <span class="pipeline-number">04</span>
+                <div class="pipeline-icon" style="background: rgba(251,191,36,0.12);">🔍</div>
+                <h5 class="text-white fw-bold mb-2">Skill Extraction</h5>
+                <p class="text-secondary small mb-0">Keyword dictionary matching across 17 roles identifies your captured competencies and missing vulnerabilities.</p>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="pipeline-step h-100 nexus-highlight-card">
+                <span class="pipeline-number">05</span>
+                <div class="pipeline-icon" style="background: rgba(192,132,252,0.12);">📊</div>
+                <h5 class="text-white fw-bold mb-2">ATS Scoring</h5>
+                <p class="text-secondary small mb-0">Cosine similarity between resume vector and role/JD baseline calculates your ATS match percentage precisely.</p>
+            </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="pipeline-step h-100 nexus-highlight-card">
+                <span class="pipeline-number">06</span>
+                <div class="pipeline-icon" style="background: rgba(248,113,113,0.12);">⚡</div>
+                <h5 class="text-white fw-bold mb-2">Gap Analysis</h5>
+                <p class="text-secondary small mb-0">Missing skill detection against role benchmarks generates actionable improvement directives and action verb upgrades.</p>
+            </div>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="pipeline-step h-100 nexus-highlight-card">
+                <span class="pipeline-number">07</span>
+                <div class="pipeline-icon" style="background: rgba(129,140,248,0.12);">🔬</div>
+                <h5 class="text-white fw-bold mb-2">Fit Simulation</h5>
+                <p class="text-secondary small mb-0">Your profile is simulated against 30+ industry roles to discover cross-domain compatibility and career pivot potential.</p>
+            </div>
+        </div>
+
+        <!-- Step 8 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="pipeline-step h-100 nexus-highlight-card">
+                <span class="pipeline-number">08</span>
+                <div class="pipeline-icon" style="background: rgba(52,211,153,0.12);">✨</div>
+                <h5 class="text-white fw-bold mb-2">Recruiter Insights</h5>
+                <p class="text-secondary small mb-0">Pattern-matched heuristics generate a full recruiter perspective report with heatmap highlights on your resume text.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DNA Matrix Explainer -->
+    <div class="row g-4 mb-7 scroll-reveal">
+        <div class="col-12">
+            <div class="glass-panel luxury-card nexus-highlight-card p-4 p-md-5">
+                <div class="nexus-card-dots"></div>
+                <div class="nexus-card-corner nexus-card-corner-tl"></div>
+                <div class="row align-items-center g-4">
+                    <div class="col-md-6">
+                        <div class="badge bg-success bg-opacity-25 text-emerald px-3 py-1 rounded-pill border border-success border-opacity-25 small mb-3">DNA Matrix</div>
+                        <h3 class="text-white fw-bold mb-3">Resume DNA — 5-Dimensional Profile</h3>
+                        <p class="text-secondary mb-4">Every resume is mapped across 5 dimensions: <strong class="text-white">Technical</strong>, <strong class="text-white">Leadership</strong>, <strong class="text-white">Impact</strong>, <strong class="text-white">Communication</strong>, and <strong class="text-white">Problem Solving</strong>. The radar chart gives you instant visual insight into your professional genome.</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="premium-pill pill-success">Technical</span>
+                            <span class="premium-pill pill-success">Leadership</span>
+                            <span class="premium-pill pill-success">Impact</span>
+                            <span class="premium-pill">Communication</span>
+                            <span class="premium-pill">Problem Solving</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-secondary small">Technical Skills</span><span class="text-white small fw-bold">High Density</span>
+                                </div>
+                                <div class="nexus-bar-wrap">
+                                    <div class="nexus-bar" data-target="85" style="background: linear-gradient(90deg,#818CF8,#C084FC);"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-secondary small">Leadership</span><span class="text-white small fw-bold">Medium</span>
+                                </div>
+                                <div class="nexus-bar-wrap">
+                                    <div class="nexus-bar" data-target="55" style="background: linear-gradient(90deg,#34D399,#22D3EE);"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-secondary small">Impact Statements</span><span class="text-white small fw-bold">Low</span>
+                                </div>
+                                <div class="nexus-bar-wrap">
+                                    <div class="nexus-bar" data-target="30" style="background: linear-gradient(90deg,#FBBF24,#FB923C);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="row mt-7 mb-5 text-center scroll-reveal">
+        <div class="col-12 glass-panel luxury-card nexus-highlight-card p-5 d-flex flex-column align-items-center justify-content-center">
+            <div class="nexus-card-dots"></div>
+            <h2 class="display-6 fw-bold text-white mb-3">Ready to optimize yours?</h2>
+            <p class="text-white-50 mb-4">Upload your resume and get a full intelligence report in under 10 seconds.</p>
+            <a href="/" class="btn btn-primary-glow btn-lg px-5 py-3 fs-5 hover-lift">Initialize Free Scan <i class="bi bi-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,228 @@
+{% extends 'layout.html' %}
+
+{% block title %}User Dashboard - Nexus AI{% endblock %}
+
+{% block nav_actions %}
+<div class="d-flex align-items-center gap-4">
+    <a href="/" class="btn btn-outline-secondary px-4 hover-lift rounded-pill">New Analysis <i class="bi bi-file-earmark-plus ms-1"></i></a>
+    <a href="/builder" class="btn nx-liquid-glass px-4 hover-lift rounded-pill ms-2">Builder Matrix <i class="bi bi-magic ms-1"></i></a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    
+    <!-- Dashboard Header -->
+    <div class="row mb-5 animate-up">
+        <div class="col-lg-7">
+            <div class="mb-4">
+                <h2 class="display-5 fw-bold text-white mb-2">Command Center</h2>
+                <p class="text-white-50 fs-5">Welcome back, Architect. Review your latest structural metrics and synthetic generation blueprints.</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="glass-panel nx-tilt-card nexus-highlight-card p-4 rounded-4 border-success border-opacity-25 h-100 d-flex align-items-center">
+                        <div class="nexus-card-dots"></div>
+                        <div class="nexus-card-corner nexus-card-corner-tl"></div>
+                        <!-- Nexus Avatar (shadcn style) -->
+                        <div class="nx-avatar nx-avatar-md nx-avatar-aura me-3">
+                            <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=100&h=100" class="nx-avatar-image" alt="Architect">
+                            <div class="nx-avatar-fallback d-none">AY</div>
+                        </div>
+                        <div>
+                            <span class="d-block text-white fw-bold mb-0">Senior Architect</span>
+                            <span class="text-emerald small"><i class="bi bi-patch-check-fill me-1"></i> Verified Expert</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="glass-panel nx-tilt-card nexus-highlight-card p-4 rounded-4 border-white-50 border-opacity-10 h-100 d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 text-indigo rounded-circle p-2 me-3">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div>
+                            <span class="d-block text-uppercase small tracking-wider text-secondary fw-bold" style="font-size: 10px;">Platform Status</span>
+                            <span class="text-emerald fw-bold">Nominal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Career Velocity Matrix (21st.dev Area Chart Port) -->
+        <div class="col-lg-5 mt-4 mt-lg-0">
+            <div class="nx-chart-card nexus-highlight-card nx-animate-fade-in delay-2">
+                <div class="nexus-card-dots"></div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="text-white fw-bold mb-0">Career Velocity</h4>
+                    <span class="badge bg-primary bg-opacity-10 text-indigo rounded-pill px-3">Live Pulse</span>
+                </div>
+                
+                <div class="nx-chart-legend">
+                    <div class="nx-legend-item">
+                        <div class="nx-legend-dot" style="background: #5B14C5;"></div>
+                        ATS Match
+                    </div>
+                    <div class="nx-legend-item">
+                        <div class="nx-legend-dot" style="background: #B58BF3;"></div>
+                        Keywords
+                    </div>
+                    <div class="nx-legend-item">
+                        <div class="nx-legend-dot" style="background: #DAC5F9;"></div>
+                        Blueprints
+                    </div>
+                </div>
+
+                <div class="nx-chart-container mb-4">
+                    <canvas class="nx-area-chart"></canvas>
+                </div>
+
+                <div class="nx-chart-metrics">
+                    <div class="nx-chart-metric-row">
+                        <div class="nx-chart-metric-label">
+                            <i class="bi bi-lightning-charge text-primary"></i>
+                            Avg. Score
+                        </div>
+                        <div class="nx-chart-metric-value">
+                            <span class="nx-metric-num">74%</span>
+                            <div class="nx-trend-icon up">
+                                <i class="bi bi-arrow-up-short"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nx-chart-metric-row">
+                        <div class="nx-chart-metric-label">
+                            <i class="bi bi-cpu text-emerald"></i>
+                            LLM Tokens
+                        </div>
+                        <div class="nx-chart-metric-value">
+                            <span class="nx-metric-num">12k</span>
+                            <div class="nx-trend-icon">
+                                <i class="bi bi-dash"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Dashboard Overview -->
+    <div class="row g-4 mb-5 animate-up delay-1">
+        <div class="col-md-4">
+            <div class="glass-panel p-4 rounded-4 luxury-card nexus-highlight-card d-flex align-items-center h-100 nx-tilt-card" data-tilt-limit="10" data-scale="1.02">
+                <div class="nexus-card-dots"></div>
+                <div class="bg-primary bg-opacity-25 text-indigo rounded-circle d-flex align-items-center justify-content-center me-4" style="width: 60px; height: 60px;">
+                    <i class="bi bi-stars fs-3"></i>
+                </div>
+                <div class="position-relative" style="z-index: 20;">
+                    <h3 class="fs-2 fw-bolder mb-0 text-white" id="stat-resumes">0</h3>
+                    <span class="text-secondary small fw-medium text-uppercase tracking-wider">Total Resumes Built</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-panel p-4 rounded-4 luxury-card nexus-highlight-card d-flex align-items-center h-100 nx-tilt-card" data-tilt-limit="10" data-scale="1.02">
+                <div class="bg-success bg-opacity-25 text-emerald rounded-circle d-flex align-items-center justify-content-center me-4" style="width: 60px; height: 60px;">
+                    <i class="bi bi-activity fs-3"></i>
+                </div>
+                <div class="position-relative" style="z-index: 20;">
+                    <h3 class="fs-2 fw-bolder mb-0 text-white" id="stat-analyses">0</h3>
+                    <span class="text-secondary small fw-medium text-uppercase tracking-wider">ATS Analyses Executed</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-panel p-4 rounded-4 luxury-card nexus-highlight-card d-flex align-items-center h-100 nx-tilt-card" data-tilt-limit="10" data-scale="1.02">
+                <div class="bg-warning bg-opacity-25 text-warning rounded-circle d-flex align-items-center justify-content-center me-4" style="width: 60px; height: 60px;">
+                    <i class="bi bi-graph-up fs-3"></i>
+                </div>
+                <div class="position-relative" style="z-index: 20;">
+                    <h3 class="fs-2 fw-bolder mb-0 text-white" id="stat-avg">0%</h3>
+                    <span class="text-secondary small fw-medium text-uppercase tracking-wider">Average Match Score</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dual Tab System for Tracking History -->
+    <div class="row animate-up delay-2">
+        <div class="col-12">
+            
+            <ul class="nav nav-pills mb-4 gap-3 border-bottom border-light border-opacity-10 pb-3" id="dashboard-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active bg-transparent text-white px-0 pe-4 fs-5 fw-semibold" id="analyses-tab" data-bs-toggle="tab" data-bs-target="#analyses" type="button" role="tab">
+                        <i class="bi bi-bar-chart-steps text-emerald me-2"></i> Recent Analyses
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link bg-transparent text-white-50 px-0 px-4 fs-5 fw-semibold" id="builds-tab" data-bs-toggle="tab" data-bs-target="#builds" type="button" role="tab">
+                        <i class="bi bi-layers text-primary me-2"></i> Generated Blueprints
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="dashboard-tabContent">
+                
+                <!-- History: AI Document Scans -->
+                <div class="tab-pane fade show active" id="analyses" role="tabpanel">
+                    <div class="glass-panel nexus-highlight-card rounded-4 overflow-hidden border border-white-50 border-opacity-10">
+                        <table class="table table-dark table-hover mb-0 bg-transparent text-white-50">
+                            <thead>
+                                <tr class="text-secondary text-uppercase tracking-wider small" style="background: rgba(0,0,0,0.2);">
+                                    <th class="py-3 px-4 fw-normal border-0">Document Target</th>
+                                    <th class="py-3 px-4 fw-normal border-0 text-center">ATS Score</th>
+                                    <th class="py-3 px-4 fw-normal border-0 text-center">Predicted Domain</th>
+                                    <th class="py-3 px-4 fw-normal border-0 text-end d-none d-md-table-cell">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- Dynamically populated by CareerPersistence in main.js -->
+                            </tbody>
+                        </table>
+                        <div id="noHistoryMsg" class="text-center py-5 d-none">
+                            <i class="bi bi-folder2-open fs-1 text-muted d-block mb-3"></i>
+                            <p class="text-secondary">No tactical data found. Run an Analysis to begin tracking.</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- History: AI Builders -->
+                <div class="tab-pane fade" id="builds" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="glass-panel p-4 rounded-4 luxury-card nexus-highlight-card h-100 position-relative transition-all border border-primary border-opacity-25">
+                                <div class="nexus-card-dots"></div>
+                                <span class="position-absolute top-0 end-0 bg-primary bg-opacity-25 text-indigo text-uppercase tracking-wider small fw-bold px-3 py-1 rounded-bottom-start" style="font-size: 10px;">Primary Target</span>
+                                
+                                <h4 class="text-white fw-bold mb-1">Machine Learning Eng.</h4>
+                                <p class="small text-white-50 mb-4 lh-base">Synthetic vectors targeted strictly for the AI/ML enterprise sector. Includes robust PyTorch implementations.</p>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Today, 10:43 AM</small>
+                                    <button class="btn btn-sm btn-outline-secondary border-opacity-25 rounded-pill text-white hover-lift"><i class="bi bi-arrow-down flex-shrink-0"></i> PDF</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="glass-panel p-4 rounded-4 luxury-card nexus-highlight-card h-100 position-relative border border-white-50 border-opacity-10 transition-all opacity-75">
+                                <h4 class="text-white fw-bold mb-1">SaaS Product Manager</h4>
+                                <p class="small text-white-50 mb-4 lh-base">Leadership timeline focusing on Agile methodologies, user-routing UX logic, and ARR metric expansions.</p>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Mar 10, 2026</small>
+                                    <button class="btn btn-sm btn-outline-secondary border-opacity-25 rounded-pill text-white hover-lift"><i class="bi bi-arrow-down flex-shrink-0"></i> PDF</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+</div>
+{% endblock %}

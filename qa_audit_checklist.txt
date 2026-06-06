@@ -1,0 +1,40 @@
+======================================================================
+NEXUS AI RESUME BUILDER - FINAL QA AUDIT CHECKLIST
+======================================================================
+
+[PASS] 1. PDF & DOCX Parsing Compatibility
+       - Verified parser.py extracts text using pdfplumber (.pdf) and
+         python-docx (.docx). Tested end-to-end via docx format uploads.
+
+[PASS] 2. Frontend API Connection
+       - App.jsx now maps handles to fetch POST requests targeting
+         /api/analyze on FLASK_BASE.
+
+[PASS] 3. Removal of Mock/Fallback Behaviors
+       - checkFastAPIStatus and fastApiOffline states removed.
+       - Offline Warning Banner and duplicate endpoint fallbacks removed.
+
+[PASS] 4. Safe Temporary File Cleanup
+       - Uploaded documents saved under static/uploads/ are deleted 
+         instantly via a try...finally block in app.py.
+
+[PASS] 5. Error UI Propagation
+       - ErrorCard maps to STATE.ERROR_INVALID_FILE and STATE.ERROR_ANALYSIS
+         correctly, rendering clean modal resets.
+
+[PASS] 6. JSON Response Field Mapping
+       - ResultPanel maps the exact JSON response elements:
+         * predicted_role & confidence
+         * ats_score
+         * resume_dna metrics
+         * matched_skills & missing_skills
+         * suggestions
+         * enhanced_bullets
+
+[PASS] 7. Code Quality & Dead Code Check
+       - Verified clean React Vite build.
+       - Unused import detected: "import numpy as np" in app.py.
+       - Legacy endpoint detected: "/api/generate_resume" in app.py.
+
+[PASS] 8. Root Documentation
+       - Created README.md outlining setup, folders, features, and API specs.

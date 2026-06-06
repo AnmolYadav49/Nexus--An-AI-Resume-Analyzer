@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - Nexus AI</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body class="auth-body">
+    
+    <!-- Top left absolute branding (only shows on mobile, hidden on lg where panel handles it) -->
+    <a class="navbar-brand d-lg-none d-flex align-items-center brand-hover position-absolute top-0 start-0 m-4 z-3" href="/">
+        <div class="logo-mark me-2 d-flex align-items-center justify-content-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#paint0_linear_sm)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="url(#paint1_linear_sm)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="url(#paint2_linear_sm)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                    <linearGradient id="paint0_linear_sm" x1="12" y1="2" x2="12" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#818CF8" stop-opacity="0.2"/><stop offset="1" stop-color="#C084FC" stop-opacity="0.8"/></linearGradient>
+                    <linearGradient id="paint1_linear_sm" x1="2" y1="17" x2="22" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#34D399"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
+                    <linearGradient id="paint2_linear_sm" x1="2" y1="12" x2="22" y2="17" gradientUnits="userSpaceOnUse"><stop stop-color="#818CF8"/><stop offset="1" stop-color="#C084FC"/></linearGradient>
+                </defs>
+            </svg>
+        </div>
+        <span class="fs-5 tracking-tight"><span class="fw-bolder text-white">Nexus</span></span>
+    </a>
+
+    <div class="container-fluid p-0 min-vh-100 overflow-hidden d-flex">
+        <div class="row g-0 w-100">
+            
+            <!-- LEFT VISUAL PANEL (Hidden on very small screens) -->
+            <div class="col-lg-5 col-xl-6 d-none d-lg-flex position-relative auth-visual-panel align-items-center justify-content-center flex-column p-5">
+                <!-- Immersive background graphic layers -->
+                <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden z-0">
+                    <div class="absolute-orb orb-indigo"></div>
+                    <div class="absolute-orb orb-emerald"></div>
+                    <!-- Abstract Neural Waveform -->
+                    <svg class="position-absolute top-50 start-50 translate-middle w-100 h-100 opacity-25" style="mix-blend-mode: overlay;" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <path d="M0,50 Q25,20 50,50 T100,50" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.5"/>
+                        <path d="M0,60 Q30,90 60,60 T100,60" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+                        <path d="M0,40 Q40,10 70,40 T100,40" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+                        <circle cx="50" cy="50" r="1.5" fill="rgba(255,255,255,0.7)" />
+                        <circle cx="25" cy="35" r="1" fill="rgba(255,255,255,0.5)" />
+                        <circle cx="70" cy="65" r="1" fill="rgba(255,255,255,0.5)" />
+                    </svg>
+                </div>
+                
+                <div class="z-1 w-100 position-absolute top-0 start-0 p-5">
+                    <a class="navbar-brand d-flex align-items-center brand-hover text-decoration-none" href="/">
+                        <div class="logo-mark me-3 d-flex align-items-center justify-content-center">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#paint0_linear_lg)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                <path d="M2 17L12 22L22 17" stroke="url(#paint1_linear_lg)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 12L12 17L22 12" stroke="url(#paint2_linear_lg)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <defs>
+                                    <linearGradient id="paint0_linear_lg" x1="12" y1="2" x2="12" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#818CF8" stop-opacity="0.3"/><stop offset="1" stop-color="#C084FC" stop-opacity="0.9"/></linearGradient>
+                                    <linearGradient id="paint1_linear_lg" x1="2" y1="17" x2="22" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#34D399"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
+                                    <linearGradient id="paint2_linear_lg" x1="2" y1="12" x2="22" y2="17" gradientUnits="userSpaceOnUse"><stop stop-color="#818CF8"/><stop offset="1" stop-color="#C084FC"/></linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <span class="fs-4 tracking-tight"><span class="fw-bolder text-white">Nexus</span><span class="fw-light text-white-50 ms-1" style="letter-spacing: 0.05em;">AI Analytics</span></span>
+                    </a>
+                </div>
+                
+                <div class="z-1 mt-auto mb-auto w-100" style="max-width: 480px;">
+                    <h1 class="display-4 fw-bolder text-white mb-4 tracking-tight lh-sm animate-up">Optimize your resume with <span class="text-gradient w-100">AI precision.</span></h1>
+                    <p class="text-white-50 fs-5 fw-light lh-base animate-up delay-1">Access institutional-grade neural analytics. Instantly baseline your structural semantics against millions of successful candidate data points.</p>
+                    
+                    <!-- Unique AI Hint Panel -->
+                    <div class="glass-panel rounded-4 p-4 mt-5 d-inline-block border-start border-4 border-info animate-up delay-2">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-lightbulb-fill text-info fs-3"></i>
+                            <div>
+                                <p class="text-uppercase tracking-wider fw-semibold text-info opacity-75 small mb-1">Intelligence Insight</p>
+                                <p class="text-white-50 mb-0 small">Recruiters favor keyword-rich, mathematically quantifiable project accomplishments over generic role descriptions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT AUTH PANEL -->
+            <div class="col-12 col-lg-7 col-xl-6 d-flex align-items-center justify-content-center p-4 p-md-5 auth-right-panel position-relative animate-up delay-3">
+                
+                <!-- Dynamic Welcome State Popup (Hidden by default, triggered by JS) -->
+                <div id="welcomeState" class="position-absolute top-0 start-50 translate-middle-x mt-4 py-2 px-4 rounded-pill glass-panel text-white small d-none z-3 fw-medium align-items-center gap-2">
+                    <i class="bi bi-stars text-emerald"></i> <span id="welcomeText">Welcome back, ready to optimize?</span>
+                </div>
+
+                <div class="auth-card-wrapper w-100 position-relative" style="max-width: 440px;">
+
+                    <!-- LOGO ANIMATION (Success Loader) -->
+                    <div id="authSuccessOverlay" class="position-absolute w-100 h-100 z-3 bg-dark bg-opacity-75 d-none rounded-4 d-flex flex-column align-items-center justify-content-center" style="backdrop-filter: blur(12px);">
+                        <div class="spinner-border text-emerald border-3 mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+                        <h4 class="text-white fw-bold">Authenticating...</h4>
+                    </div>
+
+                    <!-- FORMS CONTAINER -->
+                    <div class="glass-panel luxury-card nexus-highlight-card p-4 p-sm-5 position-relative overflow-hidden auth-forms-container">
+                        <div class="nexus-card-corner nexus-card-corner-tl"></div>
+                        <div class="nexus-card-corner nexus-card-corner-br"></div>
+                        
+                        <!-- ================= LOGIN FORM ================= -->
+                        <form id="loginForm" class="auth-form active form-transition">
+                            <div class="text-center mb-4">
+                                <h2 class="fw-bolder text-white mb-2">Welcome Back</h2>
+                                <p class="text-white-50 small">Log in to access your intelligence dashboard</p>
+                            </div>
+                            
+                            <div class="form-floating mb-3 premium-floating">
+                                <input type="email" class="form-control premium-input shadow-none" id="loginEmail" placeholder="name@example.com" required>
+                                <label for="loginEmail">Email address</label>
+                            </div>
+                            
+                            <div class="form-floating mb-3 premium-floating">
+                                <input type="password" class="form-control premium-input shadow-none" id="loginPassword" placeholder="Password" required>
+                                <label for="loginPassword">Password</label>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input custom-checkbox" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label text-white-50 small" for="rememberMe">Remember me</label>
+                                </div>
+                                <a href="#" class="text-accent-indigo small text-decoration-none hover-lift">Forgot Password?</a>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary-glow w-100 py-3 mb-4 fw-bold text-uppercase tracking-wider fs-6 d-flex align-items-center justify-content-center gap-2">
+                                Sign In <i class="bi bi-arrow-right"></i>
+                            </button>
+                            
+                            <div class="position-relative text-center mb-4">
+                                <hr class="border-light opacity-10">
+                                <span class="position-absolute top-50 start-50 translate-middle bg-dark px-3 text-white-50 small tracking-wider">OR CONTINUE WITH</span>
+                            </div>
+                            
+                            <!-- Social Login -->
+                            <div class="row g-2 mb-4">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-social w-100 py-2 d-flex align-items-center justify-content-center gap-2"><i class="bi bi-google text-danger"></i> Google</button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-social w-100 py-2 d-flex align-items-center justify-content-center gap-2"><i class="bi bi-github text-white"></i> GitHub</button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-social w-100 py-2 d-flex align-items-center justify-content-center gap-2"><i class="bi bi-twitter-x text-white"></i> Twitter</button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-social w-100 py-2 d-flex align-items-center justify-content-center gap-2"><i class="bi bi-linkedin text-primary"></i> LinkedIn</button>
+                                </div>
+                            </div>
+                            
+                            <p class="text-center text-white-50 small mb-0">Don't have an account? <a href="#" onclick="toggleAuth('signup')" class="text-white fw-medium text-decoration-none ms-1 hover-lift">Sign Up</a></p>
+                        </form>
+
+
+                        <!-- ================= SIGNUP FORM ================= -->
+                        <form id="signupForm" class="auth-form hidden form-transition">
+                            <div class="text-center mb-4">
+                                <h2 class="fw-bolder text-white mb-2">Create Account</h2>
+                                <p class="text-white-50 small">Start optimizing your career matrix</p>
+                            </div>
+                            
+                            <div class="form-floating mb-3 premium-floating">
+                                <input type="text" class="form-control premium-input shadow-none" id="signupName" placeholder="Full Name" required>
+                                <label for="signupName">Full Name</label>
+                            </div>
+
+                            <div class="form-floating mb-3 premium-floating">
+                                <input type="email" class="form-control premium-input shadow-none" id="signupEmail" placeholder="name@example.com" required>
+                                <label for="signupEmail">Email address</label>
+                            </div>
+                            
+                            <div class="form-floating mb-3 premium-floating position-relative">
+                                <input type="password" class="form-control premium-input shadow-none" id="signupPassword" placeholder="Password" required>
+                                <label for="signupPassword">Password</label>
+                                <!-- Password Strength Indicator -->
+                                <div class="password-strength-container position-absolute w-100 mt-1 d-flex gap-1" style="height: 4px;">
+                                    <div class="strength-bar rounded h-100 bg-light opacity-10" id="str1"></div>
+                                    <div class="strength-bar rounded h-100 bg-light opacity-10" id="str2"></div>
+                                    <div class="strength-bar rounded h-100 bg-light opacity-10" id="str3"></div>
+                                    <div class="strength-bar rounded h-100 bg-light opacity-10" id="str4"></div>
+                                </div>
+                                <span class="text-muted small mt-2 d-block" id="strengthText" style="font-size: 0.75rem;">Password must be at least 8 characters</span>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary-glow w-100 py-3 mb-4 mt-3 fw-bold text-uppercase tracking-wider fs-6">
+                                Create Account
+                            </button>
+                            
+                            <div class="position-relative text-center mb-4">
+                                <hr class="border-light opacity-10">
+                                <span class="position-absolute top-50 start-50 translate-middle bg-dark px-3 text-white-50 small tracking-wider">OR</span>
+                            </div>
+                            
+                            <button type="button" class="btn btn-social w-100 py-3 d-flex align-items-center justify-content-center gap-2 mb-4">
+                                <i class="bi bi-google text-danger fs-5"></i> Sign up with Google
+                            </button>
+                            
+                            <p class="text-center text-white-50 small mb-0">Already have an account? <a href="#" onclick="toggleAuth('login')" class="text-white fw-medium text-decoration-none ms-1 hover-lift">Login</a></p>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

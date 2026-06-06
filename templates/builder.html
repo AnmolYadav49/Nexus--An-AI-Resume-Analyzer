@@ -1,0 +1,424 @@
+{% extends 'layout.html' %}
+
+{% block title %}AI Resume Builder - Nexus{% endblock %}
+
+{% block nav_actions %}
+<div class="d-flex align-items-center gap-3">
+    <div class="badge bg-dark border border-white-50 text-white-50 px-3 py-2 rounded-pill font-monospace" id="stepCounter">
+        Step 1 / 8
+    </div>
+    <a href="/" class="btn btn-outline-secondary btn-sm px-3 rounded-pill text-white-50 border-opacity-25 hover-lift">Cancel</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 900px;">
+    
+    <!-- Progress Bar -->
+    <div class="row mb-5 animate-up">
+        <div class="col-12">
+            <div class="progress bg-dark" style="height: 6px; border-radius: 6px;">
+                <div id="builderProgress" class="progress-bar bg-emerald transition-all" style="width: 12.5%; transition: width 0.4s ease;"></div>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <span class="small text-emerald fw-bold" id="stepLabel">Basic Information</span>
+                <span class="small text-white-50" id="progressPctLabel">12%</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Wizard Container -->
+    <div class="row animate-up delay-1">
+        <div class="col-12">
+            <div class="glass-panel luxury-card nexus-highlight-card p-4 p-md-5 position-relative overflow-hidden" style="min-height: 50vh;">
+                <div class="nexus-card-dots"></div>
+                <div class="nexus-card-corner nexus-card-corner-tl"></div>
+                <div class="nexus-card-corner nexus-card-corner-br"></div>
+                <!-- Animated Background Node -->
+                <div class="position-absolute bottom-0 end-0 bg-primary opacity-10" style="width: 300px; height: 300px; border-top-left-radius: 100%; filter: blur(50px);"></div>
+                
+                <form id="resumeBuilderForm" class="z-1 position-relative">
+                    
+                    <!-- STEP 1: Basic Information -->
+                    <div class="wizard-step active" id="step1">
+                        <h3 class="fw-bold text-white mb-1">Basic Profile</h3>
+                        <p class="text-white-50 small mb-4">Let's start with your identity vectors.</p>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6 form-floating premium-floating">
+                                <input type="text" class="form-control premium-input" id="b_name" required placeholder="Full Name">
+                                <label for="b_name">Full Name</label>
+                            </div>
+                            <div class="col-md-6 form-floating premium-floating">
+                                <input type="email" class="form-control premium-input" id="b_email" required placeholder="Email Address">
+                                <label for="b_email">Email Address</label>
+                            </div>
+                            <div class="col-md-6 form-floating premium-floating">
+                                <input type="tel" class="form-control premium-input" id="b_phone" required placeholder="Phone Number">
+                                <label for="b_phone">Phone Number</label>
+                            </div>
+                            <div class="col-md-6 form-floating premium-floating">
+                                <input type="text" class="form-control premium-input" id="b_location" placeholder="City, Country">
+                                <label for="b_location">Location</label>
+                            </div>
+                            <div class="col-md-6 form-floating premium-floating">
+                                <input type="url" class="form-control premium-input" id="b_linkedin" placeholder="LinkedIn URL">
+                                <label for="b_linkedin">LinkedIn URL <span class="text-white-50 opacity-50 text-lowercase">(optional)</span></label>
+                            </div>
+                            <div class="col-md-6 form-floating premium-floating">
+                                <input type="url" class="form-control premium-input" id="b_github" placeholder="GitHub / Portfolio">
+                                <label for="b_github">Portfolio URL <span class="text-white-50 opacity-50 text-lowercase">(optional)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- STEP 2: Objective & Target -->
+                    <div class="wizard-step d-none" id="step2">
+                        <h3 class="fw-bold text-white mb-1">Target Trajectory</h3>
+                        <p class="text-white-50 small mb-4">What career vector are you aligning towards?</p>
+                        <div class="row g-4">
+                            <div class="col-12 form-floating premium-floating">
+                                <input type="text" class="form-control premium-input fs-5" id="t_role" placeholder="Target Role" required>
+                                <label for="t_role">Target Role (e.g. Senior Machine Learning Engineer)</label>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary small text-uppercase tracking-wider">Experience Level</label>
+                                <select class="form-select bg-dark text-white border-secondary premium-input shadow-none" id="t_level">
+                                    <option value="Entry Level">Fresher / Student (0-1 yrs)</option>
+                                    <option value="Mid Level">Mid-Level (2-4 yrs)</option>
+                                    <option value="Senior Level">Senior / Lead (5+ yrs)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 form-floating premium-floating mt-auto">
+                                <input type="text" class="form-control premium-input" id="t_industry" placeholder="Industry">
+                                <label for="t_industry">Target Industry (e.g. FinTech, Healthcare)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Education Details -->
+                    <div class="wizard-step d-none" id="step3">
+                        <h3 class="fw-bold text-white mb-1">Academic Pedigree</h3>
+                        <p class="text-white-50 small mb-4">Chronological foundation of your knowledge base.</p>
+                        
+                        <div id="educationContainer">
+                            <div class="education-block glass-panel nexus-highlight-card p-4 rounded-4 border border-white-50 border-opacity-10 mb-3 position-relative">
+                                <div class="row g-3">
+                                    <div class="col-md-8 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-degree" placeholder="Degree" required>
+                                        <label>Degree / Qualification</label>
+                                    </div>
+                                    <div class="col-md-4 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-edu-score" placeholder="CGPA">
+                                        <label>CGPA / Percentage</label>
+                                    </div>
+                                    <div class="col-12 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-univ" placeholder="University" required>
+                                        <label>University / College Name</label>
+                                    </div>
+                                    <div class="col-6 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-edu-start" placeholder="YYYY">
+                                        <label>Start Year</label>
+                                    </div>
+                                    <div class="col-6 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-edu-end" placeholder="YYYY or Present">
+                                        <label>End Year</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill mt-2" onclick="addEduBlock()"><i class="bi bi-plus"></i> Add Degree</button>
+                    </div>
+
+                    <!-- STEP 4: Skills -->
+                    <div class="wizard-step d-none" id="step4">
+                        <h3 class="fw-bold text-white mb-1">Technical Loadout</h3>
+                        <p class="text-white-50 small mb-4">Comma-separated parameters configuring your utility.</p>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="form-label text-secondary small text-uppercase tracking-wider">Languages</label>
+                                <input type="text" class="form-control premium-input" id="s_languages" placeholder="Python, JavaScript, Go, SQL...">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-secondary small text-uppercase tracking-wider">Frameworks & Tools</label>
+                                <input type="text" class="form-control premium-input" id="s_tools" placeholder="React, PyTorch, Docker, AWS...">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-secondary small text-uppercase tracking-wider">Soft Skills & Methodologies</label>
+                                <input type="text" class="form-control premium-input" id="s_soft" placeholder="Agile, Leadership, System Design...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5: Projects -->
+                    <div class="wizard-step d-none" id="step5">
+                        <h3 class="fw-bold text-white mb-1">Applied Projects</h3>
+                        <p class="text-white-50 small mb-4">Architectural implementations defining your value.</p>
+                        <div id="projectsContainer">
+                            <div class="project-block glass-panel nexus-highlight-card p-4 rounded-4 border border-white-50 border-opacity-10 mb-3 position-relative">
+                                <div class="row g-3">
+                                    <div class="col-md-6 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-proj-title" placeholder="Title" required>
+                                        <label>Project Title</label>
+                                    </div>
+                                    <div class="col-md-6 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-proj-tech" placeholder="Stack">
+                                        <label>Tech Stack</label>
+                                    </div>
+                                    <div class="col-12 form-floating premium-floating">
+                                        <textarea class="form-control premium-input build-proj-desc" style="height: 100px;" placeholder="What did you build?"></textarea>
+                                        <label>Description & Core Outcomes</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill mt-2" onclick="addProjectBlock()"><i class="bi bi-plus"></i> Add Project</button>
+                    </div>
+
+                    <!-- STEP 6: Experience -->
+                    <div class="wizard-step d-none" id="step6">
+                        <h3 class="fw-bold text-white mb-1">Corporate Chronology</h3>
+                        <p class="text-white-50 small mb-4">Documented enterprise history.</p>
+                        <div id="expContainer">
+                            <div class="exp-block glass-panel nexus-highlight-card p-4 rounded-4 border border-white-50 border-opacity-10 mb-3 position-relative">
+                                <div class="row g-3">
+                                    <div class="col-md-6 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-exp-co" placeholder="Company" required>
+                                        <label>Company / Organization</label>
+                                    </div>
+                                    <div class="col-md-6 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-exp-role" placeholder="Role" required>
+                                        <label>Job Title</label>
+                                    </div>
+                                    <div class="col-6 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-exp-start" placeholder="MM/YYYY">
+                                        <label>Start Date</label>
+                                    </div>
+                                    <div class="col-6 form-floating premium-floating">
+                                        <input type="text" class="form-control premium-input build-exp-end" placeholder="Present">
+                                        <label>End Date</label>
+                                    </div>
+                                    <div class="col-12 form-floating premium-floating">
+                                        <textarea class="form-control premium-input build-exp-desc" style="height: 120px;" placeholder="List key responsibilities..."></textarea>
+                                        <label>Key Responsibilities & Impact</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill mt-2" onclick="addExpBlock()"><i class="bi bi-plus"></i> Add Experience</button>
+                    </div>
+
+                    <!-- STEP 7: Certifications -->
+                    <div class="wizard-step d-none" id="step7">
+                        <h3 class="fw-bold text-white mb-1">Global Verifications</h3>
+                        <p class="text-white-50 small mb-4">Certifications and awards validating standard parameters.</p>
+                        <div class="col-12 form-floating premium-floating">
+                            <textarea class="form-control premium-input" id="certifications_input" style="height: 180px;" placeholder="AWS Solutions Architect..."></textarea>
+                            <label for="certifications_input">Certifications (1 per line)</label>
+                        </div>
+                    </div>
+
+                    <!-- STEP 8: Extras -->
+                    <div class="wizard-step d-none" id="step8">
+                        <h3 class="fw-bold text-white mb-1">Auxiliary Vectors</h3>
+                        <p class="text-white-50 small mb-4">Finalizing your schema map.</p>
+                        <div class="col-12 form-floating premium-floating mb-4">
+                            <input type="text" class="form-control premium-input" id="extra_langs" placeholder="English, Spanish">
+                            <label for="extra_langs">Spoken Languages</label>
+                        </div>
+                        
+                        <div class="glass-panel p-4 rounded-4 nexus-highlight-card border-success border-opacity-25 mt-4 text-center">
+                            <div class="nexus-card-dots"></div>
+                            <h4 class="text-emerald mb-2"><i class="bi bi-cpu"></i> All Parameters Syncing</h4>
+                            <p class="text-white-50 small mb-0">Our AI Heuristics Engine is ready to synthetically transform and optimize your definitions into a standardized ATS format.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Controls -->
+                    <div class="d-flex justify-content-between mt-5 pt-4 border-top border-light border-opacity-10 w-100">
+                        <button type="button" class="btn btn-outline-secondary px-4 rounded-pill d-none" id="btnPrev" onclick="changeStep(-1)">Back</button>
+                        <button type="button" class="btn btn-primary-glow px-5 rounded-pill ms-auto" id="btnNext" onclick="changeStep(1)">Continue <i class="bi bi-arrow-right ms-2"></i></button>
+                        <button type="submit" class="btn btn-success px-5 rounded-pill ms-auto d-none" id="btnGenerate">Generate Intelligent Matrix <i class="bi bi-stars"></i></button>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentStep = 1;
+    const totalSteps = 8;
+    const labels = ["Basic Information", "Target Trajectory", "Academic Pedigree", "Technical Loadout", "Applied Projects", "Corporate Chronology", "Global Verifications", "Finalization"];
+
+    function updateProgressBar() {
+        const pct = (currentStep / totalSteps) * 100;
+        document.getElementById('builderProgress').style.width = pct + '%';
+        document.getElementById('progressPctLabel').innerText = Math.round(pct) + '%';
+        document.getElementById('stepCounter').innerText = `Step ${currentStep} / ${totalSteps}`;
+        document.getElementById('stepLabel').innerText = labels[currentStep-1];
+    }
+
+    window.changeStep = function(delta) {
+        // Validation Simulation before moving forward
+        if(delta === 1) {
+            const inputs = document.querySelectorAll(`#step${currentStep} [required]`);
+            for(let i=0; i<inputs.length; i++) {
+                if(!inputs[i].value) {
+                    inputs[i].reportValidity();
+                    return;
+                }
+            }
+        }
+        
+        document.getElementById(`step${currentStep}`).classList.add('d-none');
+        document.getElementById(`step${currentStep}`).classList.remove('active');
+        
+        currentStep += delta;
+        
+        const newStep = document.getElementById(`step${currentStep}`);
+        newStep.classList.remove('d-none');
+        
+        // CSS trigger animation
+        setTimeout(() => newStep.classList.add('active'), 50);
+        
+        // Update Buttons
+        document.getElementById('btnPrev').classList.toggle('d-none', currentStep === 1);
+        document.getElementById('btnNext').classList.toggle('d-none', currentStep === totalSteps);
+        document.getElementById('btnGenerate').classList.toggle('d-none', currentStep !== totalSteps);
+        
+        updateProgressBar();
+    }
+
+    // Dynamic Logic
+    window.addEduBlock = function() {
+        const block = `<div class="education-block glass-panel nexus-highlight-card p-4 rounded-4 border border-white-50 border-opacity-10 mt-3 position-relative animate-up">
+            <div class="nexus-card-dots"></div>
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" onclick="this.parentElement.remove()"></button>
+            <div class="row g-3">
+                <div class="col-md-8 form-floating premium-floating"><input type="text" class="form-control premium-input build-degree" placeholder="Degree" required><label>Degree / Qualification</label></div>
+                <div class="col-md-4 form-floating premium-floating"><input type="text" class="form-control premium-input build-edu-score" placeholder="CGPA"><label>CGPA / Percentage</label></div>
+                <div class="col-12 form-floating premium-floating"><input type="text" class="form-control premium-input build-univ" placeholder="University" required><label>University / College Name</label></div>
+                <div class="col-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-edu-start" placeholder="YYYY"><label>Start Year</label></div>
+                <div class="col-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-edu-end" placeholder="YYYY"><label>End Year</label></div>
+            </div>
+        </div>`;
+        document.getElementById('educationContainer').insertAdjacentHTML('beforeend', block);
+    }
+    
+    window.addProjectBlock = function() {
+        const block = `<div class="project-block glass-panel nexus-highlight-card p-4 rounded-4 border border-white-50 border-opacity-10 mt-3 position-relative animate-up">
+            <div class="nexus-card-dots"></div>
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" onclick="this.parentElement.remove()"></button>
+            <div class="row g-3">
+                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-proj-title" placeholder="Title" required><label>Project Title</label></div>
+                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-proj-tech" placeholder="Stack"><label>Tech Stack</label></div>
+                <div class="col-12 form-floating premium-floating"><textarea class="form-control premium-input build-proj-desc" style="height: 100px;" placeholder="What did you build?"></textarea><label>Description & Core Outcomes</label></div>
+            </div>
+        </div>`;
+        document.getElementById('projectsContainer').insertAdjacentHTML('beforeend', block);
+    }
+
+    window.addExpBlock = function() {
+        const block = `<div class="exp-block glass-panel nexus-highlight-card p-4 rounded-4 border border-white-50 border-opacity-10 mt-3 position-relative animate-up">
+            <div class="nexus-card-dots"></div>
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" onclick="this.parentElement.remove()"></button>
+            <div class="row g-3">
+                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-co" placeholder="Company" required><label>Company / Organization</label></div>
+                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-role" placeholder="Role" required><label>Job Title</label></div>
+                <div class="col-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-start" placeholder="MM/YYYY"><label>Start Date</label></div>
+                <div class="col-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-end" placeholder="Present"><label>End Date</label></div>
+                <div class="col-12 form-floating premium-floating"><textarea class="form-control premium-input build-exp-desc" style="height: 120px;" placeholder="Responsibilities..."></textarea><label>Key Responsibilities & Impact</label></div>
+            </div>
+        </div>`;
+        document.getElementById('expContainer').insertAdjacentHTML('beforeend', block);
+    }
+
+    // FORM SUBMISSION PIPELINE
+    document.getElementById('resumeBuilderForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Extraction Map
+        const payload = {
+            basic: {
+                name: document.getElementById('b_name').value,
+                email: document.getElementById('b_email').value,
+                phone: document.getElementById('b_phone').value,
+                location: document.getElementById('b_location').value,
+                linkedin: document.getElementById('b_linkedin').value,
+                portfolio: document.getElementById('b_github').value
+            },
+            target: {
+                role: document.getElementById('t_role').value,
+                level: document.getElementById('t_level').value,
+                industry: document.getElementById('t_industry').value
+            },
+            education: Array.from(document.querySelectorAll('.education-block')).map(el => ({
+                degree: el.querySelector('.build-degree').value,
+                cgpa: el.querySelector('.build-edu-score').value,
+                univ: el.querySelector('.build-univ').value,
+                start: el.querySelector('.build-edu-start').value,
+                end: el.querySelector('.build-edu-end').value
+            })),
+            skills: {
+                langs: document.getElementById('s_languages').value,
+                tools: document.getElementById('s_tools').value,
+                soft: document.getElementById('s_soft').value
+            },
+            projects: Array.from(document.querySelectorAll('.project-block')).map(el => ({
+                title: el.querySelector('.build-proj-title').value,
+                tech: el.querySelector('.build-proj-tech').value,
+                desc: el.querySelector('.build-proj-desc').value
+            })),
+            experience: Array.from(document.querySelectorAll('.exp-block')).map(el => ({
+                company: el.querySelector('.build-exp-co').value,
+                role: el.querySelector('.build-exp-role').value,
+                start: el.querySelector('.build-exp-start').value,
+                end: el.querySelector('.build-exp-end').value,
+                desc: el.querySelector('.build-exp-desc').value
+            })),
+            extra: {
+                certifications: document.getElementById('certifications_input').value,
+                languages: document.getElementById('extra_langs').value
+            }
+        };
+
+        // Network Post
+        if (window.NexusLoader) {
+            const ldr = document.getElementById('nx-analysis-overlay');
+            if (ldr) ldr.dataset.mode = 'analysis';
+            window.NexusLoader.show(['Rewriting Bullet Points...', 'Validating ATS Densities...', 'Finalizing PDF Architecture...']);
+        }
+        
+        // Progression text update manually since no realtime JSON pipeline mapping
+        const txts = ['Rewriting Bullet Points with Action Verbs...', 'Validating ATS Lexical Densities...', 'Finalizing PDF Template Architecture...'];
+        let t = 0;
+        const iv = setInterval(() => {
+            if(t < txts.length) document.getElementById('loadStatusText').innerText = txts[t++];
+        }, 800);
+
+        try {
+            const response = await fetch('/api/generate_resume', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if(response.ok) {
+                const data = await response.json();
+                // Store temporarily globally inside sessionStorage so preview can read it natively avoiding db setup overhead
+                sessionStorage.setItem('nexus_gen_resume', JSON.stringify(data));
+                clearInterval(iv);
+                window.location.href = '/preview';
+            }
+        } catch(err) {
+            alert('Heuristic compilation failed. Try again.');
+            document.getElementById('builderOverlay').classList.add('d-none');
+        }
+    });
+
+</script>
+{% endblock %}

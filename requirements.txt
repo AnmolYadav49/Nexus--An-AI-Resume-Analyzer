@@ -1,0 +1,11 @@
+Flask
+scikit-learn
+pdfplumber
+PyPDF2
+python-docx
+pandas
+numpy
+joblib
+werkzeug
+gunicorn
+python-dotenv

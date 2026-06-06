@@ -1,0 +1,362 @@
+{% extends 'layout.html' %}
+
+{% block title %}Resume Finalization - Nexus{% endblock %}
+
+{% block nav_actions %}
+<div class="d-flex align-items-center gap-3">
+    <a href="/builder" class="btn btn-outline-secondary btn-sm px-3 rounded-pill text-white-50 border-opacity-25 hover-lift"><i class="bi bi-arrow-left me-1"></i> Back to Editor</a>
+    <button class="btn btn-primary-glow btn-sm px-4 rounded-pill hover-lift" onclick="downloadPDF()"><i class="bi bi-download me-2"></i> Export to PDF</button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 min-vh-100 position-relative">
+    <div class="row g-4 h-100">
+        
+        <!-- SIDEBAR: Theme Controller -->
+        <div class="col-lg-3 col-xl-2 animate-up delay-1 z-2">
+            <div class="glass-panel p-4 rounded-4 h-100 sticky-top" style="top: 100px;">
+                <h5 class="fw-bold text-white mb-4"><i class="bi bi-sliders me-2 text-primary"></i> Theme Control</h5>
+                
+                <!-- Font Matrix -->
+                <div class="mb-4">
+                    <label class="form-label text-secondary small text-uppercase tracking-wider fw-semibold">Typography Stack</label>
+                    <select class="form-select bg-dark text-white border-secondary premium-input shadow-none mb-2" id="fontSelector" onchange="applyTheme()">
+                        <option value="'Inter', sans-serif">Inter (Modern & Clean)</option>
+                        <option value="'Georgia', serif">Georgia (Classic & Academic)</option>
+                        <option value="'Sora', sans-serif">Sora (Tech Minimal)</option>
+                        <option value="'Arial', sans-serif">Arial (Standard ATS)</option>
+                    </select>
+                </div>
+                
+                <!-- Palette Matrix -->
+                <div class="mb-4">
+                    <label class="form-label text-secondary small text-uppercase tracking-wider fw-semibold">Primary Accent</label>
+                    <div class="d-flex gap-2">
+                        <div class="color-swatch rounded-circle cursor-pointer border border-2 border-white" style="width: 32px; height: 32px; background: #000000; transition: all 0.2s;" onclick="setAccent('#000000', this)"></div>
+                        <div class="color-swatch rounded-circle cursor-pointer border border-2 border-transparent" style="width: 32px; height: 32px; background: #1E3A8A; transition: all 0.2s;" onclick="setAccent('#1E3A8A', this)"></div>
+                        <div class="color-swatch rounded-circle cursor-pointer border border-2 border-transparent" style="width: 32px; height: 32px; background: #065F46; transition: all 0.2s;" onclick="setAccent('#065F46', this)"></div>
+                        <div class="color-swatch rounded-circle cursor-pointer border border-2 border-transparent" style="width: 32px; height: 32px; background: #991B1B; transition: all 0.2s;" onclick="setAccent('#991B1B', this)"></div>
+                    </div>
+                </div>
+
+                <!-- Template Architecture -->
+                <div class="mb-4">
+                    <label class="form-label text-secondary small text-uppercase tracking-wider fw-semibold">Structural Alignment</label>
+                    <div class="d-flex flex-column gap-2">
+                        <button class="btn btn-outline-secondary w-100 text-start px-3 py-2 border-opacity-25 active-theme" id="btnLayoutStandard" onclick="setLayout('standard')">Standard Top-Down</button>
+                        <button class="btn btn-outline-secondary w-100 text-start px-3 py-2 border-opacity-25" id="btnLayoutModern" onclick="setLayout('modern')">Modern Split-Left</button>
+                    </div>
+                </div>
+
+                <hr class="border-light border-opacity-10 my-4">
+
+                <div class="bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 p-3 text-center">
+                    <i class="bi bi-shield-check text-emerald fs-4 d-block mb-1"></i>
+                    <span class="d-block small text-white fw-medium">100% ATS Verified</span>
+                    <span class="d-block small text-white-50 opacity-75" style="font-size: 11px;">Machine-readable matrix</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CANVAS: Live PDF Engine -->
+        <div class="col-lg-9 col-xl-10 d-flex justify-content-center animate-up delay-3">
+            <!-- This is the container that HTML2PDF will capture -->
+            <div id="resumeCanvasWrapper" class="bg-white rounded shadow-lg overflow-hidden transition-all position-relative" style="width: 850px; min-height: 1100px; padding: 0;">
+                
+                <!-- The actual injected resume DOM goes here -->
+                <div id="pdfMount" style="width: 100%; height: 100%; padding: 48px; box-sizing: border-box; background: #ffffff;">
+                    <!-- Loading State -->
+                    <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center" id="pdfLoader">
+                        <div class="spinner-border text-dark border-3" role="status"></div>
+                        <p class="text-dark mt-3 fw-medium font-monospace tracking-widest text-uppercase small">Mapping Heuristics into DOM...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    // Global Canvas Config
+    let cvConfig = {
+        font: "'Inter', sans-serif",
+        accent: "#000000",
+        layout: "standard"
+    };
+    
+    let resumeData = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Attempt to pull memory vectors from Session Storage
+        const stored = sessionStorage.getItem('nexus_gen_resume');
+        if(!stored) {
+            alert('CRITICAL ERR: Memory pipeline missing. Redirecting to builder.');
+            window.location.href = '/builder';
+            return;
+        }
+        
+        try {
+            resumeData = JSON.parse(stored);
+            renderResume();
+        } catch(e) {
+            console.error(e);
+            alert('JSON Matrix corruption detected.');
+        }
+    });
+
+    // Theme Handlers
+    window.setAccent = function(hex, el) {
+        cvConfig.accent = hex;
+        // Visual toggle
+        document.querySelectorAll('.color-swatch').forEach(n => {
+            n.classList.remove('border-white');
+            n.classList.add('border-transparent');
+        });
+        el.classList.remove('border-transparent');
+        el.classList.add('border-white');
+        renderResume();
+    };
+
+    window.applyTheme = function() {
+        cvConfig.font = document.getElementById('fontSelector').value;
+        renderResume();
+    };
+
+    window.setLayout = function(type) {
+        cvConfig.layout = type;
+        document.getElementById('btnLayoutStandard').classList.remove('text-white', 'border-white', 'bg-white', 'bg-opacity-10');
+        document.getElementById('btnLayoutModern').classList.remove('text-white', 'border-white', 'bg-white', 'bg-opacity-10');
+        
+        if(type === 'standard') {
+            document.getElementById('btnLayoutStandard').classList.add('text-white', 'border-white', 'bg-white', 'bg-opacity-10');
+        } else {
+            document.getElementById('btnLayoutModern').classList.add('text-white', 'border-white', 'bg-white', 'bg-opacity-10');
+        }
+        renderResume();
+    };
+
+    // DOM Engine
+    function renderResume() {
+        if(!resumeData) return;
+        
+        const mount = document.getElementById('pdfMount');
+        const data = resumeData;
+        const c = cvConfig;
+
+        // Ensure string safety on arrays
+        if (!data.basic) data.basic = {};
+        if (!data.target) data.target = {};
+        const edu = data.education || [];
+        const exp = data.experience || [];
+        const proj = data.projects || [];
+        const skills = data.skills || {};
+
+        // Build HTML String
+        mount.style.fontFamily = c.font;
+        mount.style.color = '#333333';
+        
+        // Dynamic Accent Style Injection
+        const sectionStyle = `color: ${c.accent}; border-bottom: 2px solid ${c.accent}; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 4px; margin-bottom: 12px; margin-top: 24px; font-size: 14px;`;
+
+        // ============================================
+        // LAYOUT 1: STANDARD TOP-DOWN (Pure ATS Engine)
+        // ============================================
+        if(c.layout === 'standard') {
+            let html = `
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <h1 style="font-size: 32px; font-weight: 800; margin: 0 0 8px 0; color: #111;">${data.basic.name || 'Anonymous Identity'}</h1>
+                    <div style="font-size: 13px; color: #555;">
+                        ${data.basic.location ? `<span>${data.basic.location}</span>` : ''}
+                        ${data.basic.phone ? ` &bull; <span>${data.basic.phone}</span>` : ''}
+                        ${data.basic.email ? ` &bull; <span>${data.basic.email}</span>` : ''}
+                    </div>
+                    <div style="font-size: 13px; color: #555; margin-top: 4px;">
+                        ${data.basic.linkedin ? `<span>${data.basic.linkedin}</span>` : ''}
+                        ${data.basic.portfolio ? ` &bull; <span>${data.basic.portfolio}</span>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            // Objective / AI Summary
+            if(data.synthetic_summary || data.target.role) {
+                html += `
+                <h2 style="${sectionStyle}">Professional Summary</h2>
+                <p style="font-size: 12px; line-height: 1.6; margin: 0;">
+                    ${data.synthetic_summary || `Targeting ${data.target.role || 'a standard'} position ${data.target.industry ? 'within ' + data.target.industry : ''}. Dedicated professional equipped with robust analytical capabilities and cross-functional technical proficiencies bridging academic frameworks into enterprise deployments.`}
+                </p>`;
+            }
+
+            // Skills (ATS Keyword Hotspot)
+            if(skills.langs || skills.tools || skills.soft) {
+                html += `<h2 style="${sectionStyle}">Technical Proficiencies</h2>
+                <div style="font-size: 12px; line-height: 1.6;">`;
+                if(skills.langs) html += `<div><strong>Languages:</strong> ${skills.langs}</div>`;
+                if(skills.tools) html += `<div><strong>Frameworks/Tools:</strong> ${skills.tools}</div>`;
+                if(skills.soft) html += `<div><strong>Concepts:</strong> ${skills.soft}</div>`;
+                html += `</div>`;
+            }
+
+            // Experience
+            if(exp.length > 0) {
+                html += `<h2 style="${sectionStyle}">Professional Experience</h2>`;
+                exp.forEach(e => {
+                    html += `
+                    <div style="margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                            <strong>${e.role || 'Role'} &bull; ${e.company || 'Company'}</strong>
+                            <span style="font-style: italic;">${e.start || ''} - ${e.end || ''}</span>
+                        </div>
+                        <div style="font-size: 12px; line-height: 1.6; margin-top: 6px;">
+                            <ul style="margin: 0; padding-left: 18px;">
+                                ${e.synthetic_bullets ? e.synthetic_bullets.map(b => `<li>${b}</li>`).join('') : `<li>${e.desc || 'Responsibilities missing.'}</li>`}
+                            </ul>
+                        </div>
+                    </div>`;
+                });
+            }
+
+            // Projects
+            if(proj.length > 0) {
+                html += `<h2 style="${sectionStyle}">Applied Projects</h2>`;
+                proj.forEach(p => {
+                    html += `
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                            <strong>${p.title || 'Project'}</strong>
+                            <span style="font-style: italic; color: #666;">${p.tech || ''}</span>
+                        </div>
+                        <div style="font-size: 12px; line-height: 1.6; margin-top: 4px;">
+                            <ul style="margin: 0; padding-left: 18px;">
+                                ${p.synthetic_bullets ? p.synthetic_bullets.map(b => `<li>${b}</li>`).join('') : `<li>${p.desc || 'Description missing.'}</li>`}
+                            </ul>
+                        </div>
+                    </div>`;
+                });
+            }
+
+            // Education
+            if(edu.length > 0) {
+                html += `<h2 style="${sectionStyle}">Education</h2>`;
+                edu.forEach(e => {
+                    html += `
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                            <strong>${e.univ || 'University Name'}</strong>
+                            <span style="font-style: italic;">${e.start || ''} - ${e.end || ''}</span>
+                        </div>
+                        <div style="font-size: 12px; line-height: 1.6;">
+                            <span>${e.degree || 'Degree'} ${e.cgpa ? `&bull; CGPA: ${e.cgpa}` : ''}</span>
+                        </div>
+                    </div>`;
+                });
+            }
+            
+            // Certifications
+            if(data.extra && data.extra.certifications) {
+                html += `<h2 style="${sectionStyle}">Certifications & Verifications</h2>
+                <div style="font-size: 12px; line-height: 1.5; white-space: pre-wrap;">${data.extra.certifications}</div>`;
+            }
+
+            mount.innerHTML = html;
+        } 
+        // ============================================
+        // LAYOUT 2: MODERN SPLIT (Two-Column)
+        // ============================================
+        else {
+            mount.innerHTML = `<div style="display: flex; height: 100%;">
+                <div style="width: 30%; border-right: 1px solid #ddd; padding-right: 24px;">
+                    <h1 style="font-size: 28px; font-weight: 800; margin: 0 0 16px 0; color: ${c.accent};">${data.basic.name || 'Anonymous'}</h1>
+                    
+                    <h3 style="font-size: 12px; border-bottom: 2px solid ${c.accent}; margin-bottom: 12px; padding-bottom: 4px; text-transform: uppercase;">Contact</h3>
+                    <div style="font-size: 11px; color: #555; line-height: 1.8; margin-bottom: 24px; word-wrap: break-word;">
+                        ${data.basic.phone ? `<div>${data.basic.phone}</div>` : ''}
+                        ${data.basic.email ? `<div>${data.basic.email}</div>` : ''}
+                        ${data.basic.location ? `<div>${data.basic.location}</div>` : ''}
+                        ${data.basic.linkedin ? `<div style="margin-top: 8px;">${data.basic.linkedin}</div>` : ''}
+                    </div>
+
+                    <h3 style="font-size: 12px; border-bottom: 2px solid ${c.accent}; margin-bottom: 12px; padding-bottom: 4px; text-transform: uppercase;">Skills</h3>
+                    <div style="font-size: 11px; color: #555; line-height: 1.8; margin-bottom: 24px;">
+                         ${skills.langs ? `<b>Languages</b><br>${skills.langs}<br><br>` : ''}
+                         ${skills.tools ? `<b>Frameworks</b><br>${skills.tools}<br><br>` : ''}
+                         ${skills.soft ? `<b>Core</b><br>${skills.soft}` : ''}
+                    </div>
+                </div>
+                
+                <div style="width: 70%; padding-left: 24px;">
+                    <div style="font-size: 12px; line-height: 1.6; margin-bottom: 24px;">
+                        ${data.synthetic_summary || 'Targeting a professional tier trajectory leveraging robust technical frameworks to construct optimal solutions.'}
+                    </div>
+
+                    <h2 style="${sectionStyle}; margin-top: 0;">Experience</h2>
+                    ${exp.map(e => `
+                        <div style="margin-bottom: 16px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                                <strong>${e.role} &bull; ${e.company}</strong>
+                                <span style="font-style: italic;">${e.start} - ${e.end}</span>
+                            </div>
+                            <ul style="font-size: 11px; padding-left: 16px; margin: 6px 0 0 0; line-height: 1.5;">
+                                ${e.synthetic_bullets ? e.synthetic_bullets.map(b => `<li>${b}</li>`).join('') : `<li>${e.desc}</li>`}
+                            </ul>
+                        </div>
+                    `).join('')}
+
+                    <h2 style="${sectionStyle}; margin-top: 24px;">Projects</h2>
+                    ${proj.map(p => `
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                                <strong>${p.title}</strong>
+                                <span style="font-style: italic; color: #666; font-size: 10px;">${p.tech}</span>
+                            </div>
+                            <ul style="font-size: 11px; padding-left: 16px; margin: 4px 0 0 0; line-height: 1.5;">
+                                ${p.synthetic_bullets ? p.synthetic_bullets.map(b => `<li>${b}</li>`).join('') : `<li>${p.desc}</li>`}
+                            </ul>
+                        </div>
+                    `).join('')}
+
+                    <h2 style="${sectionStyle}; margin-top: 24px;">Education</h2>
+                    ${edu.map(e => `
+                        <div style="margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                                <strong>${e.univ}</strong>
+                                <span style="font-style: italic;">${e.start} - ${e.end}</span>
+                            </div>
+                            <div style="font-size: 11px;">${e.degree} ${e.cgpa ? `&bull; ${e.cgpa}` : ''}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+        }
+    }
+
+    // PDF Compilation Vector Engine
+    window.downloadPDF = function() {
+        const doc = document.getElementById('resumeCanvasWrapper');
+        const opt = {
+            margin:       0,
+            filename:     `${resumeData.basic.name.replace(/ /g, '_')}_Nexus_Resume.pdf`,
+            image:        { type: 'jpeg', quality: 1.0 },
+            html2canvas:  { scale: 2, useCORS: true, logging: false },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        const oldShadow = doc.style.boxShadow;
+        doc.style.boxShadow = 'none'; // removing shadow so html2canvas doesn't capture graphical overflow
+        
+        // Map HTML2PDF Pipeline
+        html2pdf().set(opt).from(doc).save().then(() => {
+            doc.style.boxShadow = oldShadow;
+        });
+    }
+
+    // Default Initialization Hack since button active state needs resetting
+    setLayout('standard');
+</script>
+{% endblock %}
