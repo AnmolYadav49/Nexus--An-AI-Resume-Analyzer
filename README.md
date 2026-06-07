@@ -143,6 +143,41 @@ Below is the step-by-step visual workflow of the Nexus AI Resume Builder interfa
     ![07-architecture-flow.png](docs/screenshots/07-architecture-flow.png)
 
 
+
+## Deployment Guide
+
+This project is prepared for deployment using **Render** for the backend API and **Vercel** for the frontend SPA.
+
+### 1. Backend Deployment (Render)
+1. Sign in to [Render](https://render.com) and click **New > Web Service**.
+2. Connect your GitHub repository.
+3. Configure the service:
+   * **Name**: `nexus-resume-backend`
+   * **Environment**: `Python`
+   * **Build Command**: `pip install -r requirements.txt`
+   * **Start Command**: `gunicorn app:app`
+4. Under **Advanced**, add the following environment variables:
+   * `FLASK_ENV` = `production`
+   * `FLASK_SECRET_KEY` = *[A secure random string]*
+   * `ALLOWED_ORIGINS` = `https://your-vercel-app-url.vercel.app` (You can update this after Vercel deployment is finished).
+5. Deploy. Render will read the target Python version from `runtime.txt` and bootstrap the app.
+6. Verify deployment by visiting your Render URL endpoint: `https://your-backend-app.onrender.com/api/health`.
+
+### 2. Frontend Deployment (Vercel)
+1. Sign in to [Vercel](https://vercel.com) and click **Add New > Project**.
+2. Connect your GitHub repository.
+3. Configure the build parameters:
+   * **Root Directory**: `frontend`
+   * **Framework Preset**: `Vite` (or `Other` if not auto-detected)
+   * **Build Command**: `npm run build`
+   * **Output Directory**: `dist`
+4. Under **Environment Variables**, add:
+   * `VITE_API_BASE_URL` = `https://your-backend-app.onrender.com` (Your Render deployment URL).
+5. Click **Deploy**. Vercel will build the frontend assets and automatically apply routing rewrites declared in `vercel.json` to support clean single page app urls.
+6. Update your Render web service's `ALLOWED_ORIGINS` variable with your final Vercel application domain.
+
+---
+
 ## Future Improvements
 *   **Local LLM Integration**: Incorporate an offline Ollama backend instance for advanced contextual summaries.
 *   **Dynamic Highlighting**: Add an interactive text viewer in the React UI with heatmap highlights for captured skills.
