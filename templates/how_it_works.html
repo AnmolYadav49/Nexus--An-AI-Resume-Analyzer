@@ -170,3 +170,52 @@
 
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Pipeline Steps Staggered Entrance Reveal
+        const steps = document.querySelectorAll('.pipeline-step');
+        const stepObserver = new IntersectionObserver((entries, observer) => {
+            let entryCount = 0;
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const step = entry.target;
+                    setTimeout(() => {
+                        step.classList.add('visible');
+                    }, entryCount * 120);
+                    entryCount++;
+                    observer.unobserve(step);
+                }
+            });
+        }, {
+            threshold: 0.05,
+            rootMargin: '0px 0px -30px 0px'
+        });
+        
+        steps.forEach(step => stepObserver.observe(step));
+        
+        // 2. DNA Matrix Progress Bars Reveal & Fill Animation
+        const progressBars = document.querySelectorAll('.nexus-bar');
+        const barObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const bar = entry.target;
+                    const target = bar.getAttribute('data-target');
+                    if (target) {
+                        setTimeout(() => {
+                            bar.style.width = target + '%';
+                        }, 200);
+                    }
+                    observer.unobserve(bar);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        progressBars.forEach(bar => barObserver.observe(bar));
+    });
+</script>
+{% endblock %}
+
