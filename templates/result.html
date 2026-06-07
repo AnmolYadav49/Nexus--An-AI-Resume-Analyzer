@@ -267,10 +267,66 @@
 
 {% block scripts %}
 <script>
-    // 1. Chart.js Initialization Engine
+    // 1. Chart.js & UI Animation Initialization Engine
     document.addEventListener('DOMContentLoaded', function() {
+        // Animate Score Ring
+        const ring = document.querySelector('.score-ring-fill');
+        const scoreDisplay = document.querySelector('.score-number');
+        if (ring && scoreDisplay) {
+            const score = parseFloat(ring.getAttribute('data-score') || 0);
+            
+            // Set color class based on score
+            if (score >= 70) {
+                ring.classList.add('green');
+            } else if (score >= 40) {
+                ring.classList.add('yellow');
+            } else {
+                ring.classList.add('red');
+            }
+            
+            // Calculate stroke-dashoffset
+            const circumference = 283;
+            const offset = circumference - (score / 100) * circumference;
+            
+            // Trigger transition
+            setTimeout(() => {
+                ring.style.strokeDashoffset = offset;
+            }, 100);
+            
+            // Animate number text
+            let currentScore = 0;
+            const duration = 1200; // ms
+            const stepTime = Math.max(Math.floor(duration / (score || 1)), 15);
+            const timer = setInterval(() => {
+                if (currentScore >= score) {
+                    scoreDisplay.innerText = Math.round(score) + '%';
+                    clearInterval(timer);
+                } else {
+                    currentScore += score / 50; // step up in increments
+                    if (currentScore >= score) {
+                        scoreDisplay.innerText = Math.round(score) + '%';
+                        clearInterval(timer);
+                    } else {
+                        scoreDisplay.innerText = Math.round(currentScore) + '%';
+                    }
+                }
+            }, stepTime);
+        }
+
+        // Animate Breakdown and Job Fit Progress Bars
+        const nexusBars = document.querySelectorAll('.nexus-bar');
+        nexusBars.forEach(bar => {
+            const target = bar.getAttribute('data-target');
+            if (target) {
+                setTimeout(() => {
+                    bar.style.width = target + '%';
+                }, 100);
+            }
+        });
+
         // DNA Radar Chart
         const dnaCtx = document.getElementById('dnaRadarChart');
+
         const dnaData = JSON.parse(dnaCtx.getAttribute('data-dna'));
         
         new Chart(dnaCtx, {
