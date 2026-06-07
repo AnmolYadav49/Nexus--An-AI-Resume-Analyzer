@@ -36,7 +36,7 @@
                 <div class="nexus-card-corner nexus-card-corner-br"></div>
 
                 
-                <form id="resumeBuilderForm" class="z-1 position-relative">
+                <form id="resumeBuilderForm" class="z-1 position-relative" novalidate>
                     
                     <!-- STEP 1: Basic Information -->
                     <div class="wizard-step active" id="step1">
@@ -45,15 +45,15 @@
                         
                         <div class="row g-4">
                             <div class="col-md-6 form-floating premium-floating">
-                                <input type="text" class="form-control premium-input" id="b_name" required placeholder="Full Name">
+                                <input type="text" class="form-control premium-input" id="b_name" placeholder="Full Name" required>
                                 <label for="b_name">Full Name</label>
                             </div>
                             <div class="col-md-6 form-floating premium-floating">
-                                <input type="email" class="form-control premium-input" id="b_email" required placeholder="Email Address">
+                                <input type="email" class="form-control premium-input" id="b_email" placeholder="Email Address" required>
                                 <label for="b_email">Email Address</label>
                             </div>
                             <div class="col-md-6 form-floating premium-floating">
-                                <input type="tel" class="form-control premium-input" id="b_phone" required placeholder="Phone Number">
+                                <input type="tel" class="form-control premium-input" id="b_phone" placeholder="Phone Number" required>
                                 <label for="b_phone">Phone Number</label>
                             </div>
                             <div class="col-md-6 form-floating premium-floating">
@@ -104,7 +104,7 @@
                             <div class="education-block glass-panel p-4 rounded-4 border border-white-50 border-opacity-10 mb-3 position-relative" style="background: rgba(15, 15, 20, 0.95) !important;">
                                 <div class="row g-3">
                                     <div class="col-md-8 form-floating premium-floating">
-                                        <input type="text" class="form-control premium-input build-degree" placeholder="Degree" required>
+                                        <input type="text" class="form-control premium-input build-degree" placeholder="Degree">
                                         <label>Degree / Qualification</label>
                                     </div>
                                     <div class="col-md-4 form-floating premium-floating">
@@ -112,7 +112,7 @@
                                         <label>CGPA / Percentage</label>
                                     </div>
                                     <div class="col-12 form-floating premium-floating">
-                                        <input type="text" class="form-control premium-input build-univ" placeholder="University" required>
+                                        <input type="text" class="form-control premium-input build-univ" placeholder="University">
                                         <label>University / College Name</label>
                                     </div>
                                     <div class="col-6 form-floating premium-floating">
@@ -157,7 +157,7 @@
                             <div class="project-block glass-panel p-4 rounded-4 border border-white-50 border-opacity-10 mb-3 position-relative" style="background: rgba(15, 15, 20, 0.95) !important;">
                                 <div class="row g-3">
                                     <div class="col-md-6 form-floating premium-floating">
-                                        <input type="text" class="form-control premium-input build-proj-title" placeholder="Title" required>
+                                        <input type="text" class="form-control premium-input build-proj-title" placeholder="Title">
                                         <label>Project Title</label>
                                     </div>
                                     <div class="col-md-6 form-floating premium-floating">
@@ -182,11 +182,11 @@
                             <div class="exp-block glass-panel p-4 rounded-4 border border-white-50 border-opacity-10 mb-3 position-relative" style="background: rgba(15, 15, 20, 0.95) !important;">
                                 <div class="row g-3">
                                     <div class="col-md-6 form-floating premium-floating">
-                                        <input type="text" class="form-control premium-input build-exp-co" placeholder="Company" required>
+                                        <input type="text" class="form-control premium-input build-exp-co" placeholder="Company">
                                         <label>Company / Organization</label>
                                     </div>
                                     <div class="col-md-6 form-floating premium-floating">
-                                        <input type="text" class="form-control premium-input build-exp-role" placeholder="Role" required>
+                                        <input type="text" class="form-control premium-input build-exp-role" placeholder="Role">
                                         <label>Job Title</label>
                                     </div>
                                     <div class="col-6 form-floating premium-floating">
@@ -262,14 +262,22 @@
         document.getElementById('stepLabel').innerText = labels[currentStep-1];
     }
 
+    const requiredFields = {
+        1: ['b_name', 'b_email', 'b_phone'],
+        2: ['t_role']
+    };
+
     window.changeStep = function(delta) {
         // Validation Simulation before moving forward
         if(delta === 1) {
-            const inputs = document.querySelectorAll(`#step${currentStep} [required]`);
-            for(let i=0; i<inputs.length; i++) {
-                if(!inputs[i].value) {
-                    inputs[i].reportValidity();
-                    return;
+            const fields = requiredFields[currentStep];
+            if (fields) {
+                for(let i=0; i<fields.length; i++) {
+                    const input = document.getElementById(fields[i]);
+                    if(input && !input.value.trim()) {
+                        input.reportValidity();
+                        return;
+                    }
                 }
             }
         }
@@ -299,9 +307,9 @@
             <div class="nexus-card-dots"></div>
             <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" onclick="this.parentElement.remove()"></button>
             <div class="row g-3">
-                <div class="col-md-8 form-floating premium-floating"><input type="text" class="form-control premium-input build-degree" placeholder="Degree" required><label>Degree / Qualification</label></div>
+                <div class="col-md-8 form-floating premium-floating"><input type="text" class="form-control premium-input build-degree" placeholder="Degree"><label>Degree / Qualification</label></div>
                 <div class="col-md-4 form-floating premium-floating"><input type="text" class="form-control premium-input build-edu-score" placeholder="CGPA"><label>CGPA / Percentage</label></div>
-                <div class="col-12 form-floating premium-floating"><input type="text" class="form-control premium-input build-univ" placeholder="University" required><label>University / College Name</label></div>
+                <div class="col-12 form-floating premium-floating"><input type="text" class="form-control premium-input build-univ" placeholder="University"><label>University / College Name</label></div>
                 <div class="col-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-edu-start" placeholder="YYYY"><label>Start Year</label></div>
                 <div class="col-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-edu-end" placeholder="YYYY"><label>End Year</label></div>
             </div>
@@ -314,7 +322,7 @@
             <div class="nexus-card-dots"></div>
             <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" onclick="this.parentElement.remove()"></button>
             <div class="row g-3">
-                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-proj-title" placeholder="Title" required><label>Project Title</label></div>
+                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-proj-title" placeholder="Title"><label>Project Title</label></div>
                 <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-proj-tech" placeholder="Stack"><label>Tech Stack</label></div>
                 <div class="col-12 form-floating premium-floating"><textarea class="form-control premium-input build-proj-desc" style="height: 100px;" placeholder="What did you build?"></textarea><label>Description & Core Outcomes</label></div>
             </div>
@@ -327,8 +335,8 @@
             <div class="nexus-card-dots"></div>
             <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" onclick="this.parentElement.remove()"></button>
             <div class="row g-3">
-                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-co" placeholder="Company" required><label>Company / Organization</label></div>
-                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-role" placeholder="Role" required><label>Job Title</label></div>
+                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-co" placeholder="Company"><label>Company / Organization</label></div>
+                <div class="col-md-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-role" placeholder="Role"><label>Job Title</label></div>
                 <div class="col-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-start" placeholder="MM/YYYY"><label>Start Date</label></div>
                 <div class="col-6 form-floating premium-floating"><input type="text" class="form-control premium-input build-exp-end" placeholder="Present"><label>End Date</label></div>
                 <div class="col-12 form-floating premium-floating"><textarea class="form-control premium-input build-exp-desc" style="height: 120px;" placeholder="Responsibilities..."></textarea><label>Key Responsibilities & Impact</label></div>
@@ -357,48 +365,64 @@
                 industry: document.getElementById('t_industry').value
             },
             education: Array.from(document.querySelectorAll('.education-block')).map(el => ({
-                degree: el.querySelector('.build-degree').value,
-                cgpa: el.querySelector('.build-edu-score').value,
-                univ: el.querySelector('.build-univ').value,
-                start: el.querySelector('.build-edu-start').value,
-                end: el.querySelector('.build-edu-end').value
+                degree: el.querySelector('.build-degree').value || '',
+                cgpa: el.querySelector('.build-edu-score').value || '',
+                univ: el.querySelector('.build-univ').value || '',
+                start: el.querySelector('.build-edu-start').value || '',
+                end: el.querySelector('.build-edu-end').value || ''
             })),
             skills: {
-                langs: document.getElementById('s_languages').value,
-                tools: document.getElementById('s_tools').value,
-                soft: document.getElementById('s_soft').value
+                langs: document.getElementById('s_languages').value || '',
+                tools: document.getElementById('s_tools').value || '',
+                soft: document.getElementById('s_soft').value || ''
             },
             projects: Array.from(document.querySelectorAll('.project-block')).map(el => ({
-                title: el.querySelector('.build-proj-title').value,
-                tech: el.querySelector('.build-proj-tech').value,
-                desc: el.querySelector('.build-proj-desc').value
+                title: el.querySelector('.build-proj-title').value || '',
+                tech: el.querySelector('.build-proj-tech').value || '',
+                desc: el.querySelector('.build-proj-desc').value || ''
             })),
             experience: Array.from(document.querySelectorAll('.exp-block')).map(el => ({
-                company: el.querySelector('.build-exp-co').value,
-                role: el.querySelector('.build-exp-role').value,
-                start: el.querySelector('.build-exp-start').value,
-                end: el.querySelector('.build-exp-end').value,
-                desc: el.querySelector('.build-exp-desc').value
+                company: el.querySelector('.build-exp-co').value || '',
+                role: el.querySelector('.build-exp-role').value || '',
+                start: el.querySelector('.build-exp-start').value || '',
+                end: el.querySelector('.build-exp-end').value || '',
+                desc: el.querySelector('.build-exp-desc').value || ''
             })),
             extra: {
-                certifications: document.getElementById('certifications_input').value,
-                languages: document.getElementById('extra_langs').value
+                certifications: document.getElementById('certifications_input').value || '',
+                languages: document.getElementById('extra_langs').value || ''
             }
         };
 
         // Network Post
-        if (window.NexusLoader) {
-            const ldr = document.getElementById('nx-analysis-overlay');
-            if (ldr) ldr.dataset.mode = 'analysis';
-            window.NexusLoader.show(['Rewriting Bullet Points...', 'Validating ATS Densities...', 'Finalizing PDF Architecture...']);
+        const overlay = document.getElementById('nx-analysis-overlay');
+        const stepText = document.getElementById('nx-step-text');
+        const subtext = document.getElementById('nx-loader-subtext');
+        const progressBar = document.getElementById('nx-analysis-bar');
+
+        if (overlay) {
+            overlay.style.display = 'flex';
+            overlay.style.opacity = '1';
         }
         
-        // Progression text update manually since no realtime JSON pipeline mapping
-        const txts = ['Rewriting Bullet Points with Action Verbs...', 'Validating ATS Lexical Densities...', 'Finalizing PDF Template Architecture...'];
+        if (stepText) stepText.innerText = 'Rewriting Bullet Points...';
+        if (subtext) subtext.innerText = 'Applying active action verbs to chronological definitions';
+        if (progressBar) progressBar.style.width = '30%';
+
+        // Progression text update manually
+        const txts = [
+            { step: 'Validating ATS Densities...', sub: 'Comparing skill distributions to industry benchmarks', width: '60%' },
+            { step: 'Finalizing PDF Architecture...', sub: 'Compiling structured templates with clean hierarchy', width: '90%' }
+        ];
         let t = 0;
         const iv = setInterval(() => {
-            if(t < txts.length) document.getElementById('loadStatusText').innerText = txts[t++];
-        }, 800);
+            if (t < txts.length) {
+                if (stepText) stepText.innerText = txts[t].step;
+                if (subtext) subtext.innerText = txts[t].sub;
+                if (progressBar) progressBar.style.width = txts[t].width;
+                t++;
+            }
+        }, 1000);
 
         try {
             const response = await fetch('/api/generate_resume', {
@@ -410,12 +434,18 @@
                 const data = await response.json();
                 // Store temporarily globally inside sessionStorage so preview can read it natively avoiding db setup overhead
                 sessionStorage.setItem('nexus_gen_resume', JSON.stringify(data));
-                clearInterval(iv);
-                window.location.href = '/preview';
+                if (progressBar) progressBar.style.width = '100%';
+                setTimeout(() => {
+                    clearInterval(iv);
+                    window.location.href = '/preview';
+                }, 500);
+            } else {
+                throw new Error('Server returned error status');
             }
         } catch(err) {
-            alert('Heuristic compilation failed. Try again.');
-            document.getElementById('builderOverlay').classList.add('d-none');
+            clearInterval(iv);
+            alert('Resume compilation failed. Please check that your details are valid and try again.');
+            if (overlay) overlay.style.display = 'none';
         }
     });
 
