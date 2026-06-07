@@ -378,9 +378,10 @@ export default function App() {
           {/* Go to full analyzer */}
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
             Want the full ATS analysis?{' '}
-            <a href="http://127.0.0.1:5000/" style={{ color: 'var(--accent)', textDecoration: 'none' }}>
+            <a href={FLASK_BASE} style={{ color: 'var(--accent)', textDecoration: 'none' }}>
               Open full analyzer →
             </a>
+
           </p>
         </main>
       )}
